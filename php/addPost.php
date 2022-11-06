@@ -3,17 +3,12 @@
     $database = new Database();
     $description = $_POST['description'];
     $user_id = $_POST['user_id'];
-    $err_message = 1;
-
     $data = array(
         "description" => $description,
         "user_id" => $user_id
     );
-    $addPost = $database->insert("posts", $data);
-
-    if (!$addPost) {
-        $err_message = "Cannot add post! (contact admin)";
-    }
-
-    echo $err_message;
+    $database->insert("posts", $data);
+    $query = "SELECT * FROM posts WHERE description='".$description."' AND user_id='".$user_id."' LIMIT 1";
+    $getPost = $database->query($query);
+    echo json_encode($getPost);
 ?>

@@ -70,6 +70,8 @@
     </div>
     <div class="d-flex justify-content-center">
         <button class="btn btn-primary" type="button" id="refresh_posts">Refresh Posts</button>
+        &nbsp;
+        <button class="btn btn-warning" type="button" id="delete_posts"><span style="color: white;">Delete Posts</span></button>
     </div>
     <div id="posts" class="d-flex justify-content-center align-items-center"></div>
     <script>
@@ -77,33 +79,69 @@
             function sweetAlert(title, message, type = "success") {
                 Swal.fire(title, message, type);
             }
+            let initial_limit = 0;
+            $("#delete_posts").click(function() {
+                let admin = '<?php echo $user['admin']; ?>';
+                if (admin != 1) {
+                    sweetAlert("Oops..", "You don't have admin role!", "error");
+                } else {
+                    if (!$("#posts").html()) {
+                        sweetAlert("Oops..", "No posts to delete!", "error");
+                    } else {
+                        $.ajax({
+                            url: "./php/deletePosts.php",
+                            success: function (data) {
+                                sweetAlert("Success!", "The posts have been deleted!");
+                                $("#posts").html("");
+                            }
+                        });
+                    }
+                }
+            });
             $("#refresh_posts").click(function() {
+                initial_limit = 0;
+                $("#posts").html("");
+                refreshPosts();
+            });
+            function refreshPosts() {
                 $.ajax({
                     url: "./php/getPosts.php",
+                    type: "POST",
+                    data: {
+                        start: initial_limit,
+                        limit: 5
+                    },
                     success: function (posts) {
                         posts = JSON.parse(posts);
-                        let html_posts = ``;
-                        console.log(posts.length);
-                        $("#posts").html("");
-                        for (let i = 0; i < posts.length; i++) {
-                            html_posts+=`<div class="card post" style="width: 18rem;">
-                                <div class="card-body">
-                                <p class="card-text">`+posts[i]['description']+`</p>
-                                <p class="card-text">`+posts[i]['created_at']+`</p>
-                                <a href="#" class="btn btn-primary">`+posts[i]['username']+`</a>
-                                </div>
-                            </div>`;
+                        console.log(posts);
+                        let posts_length = posts.length;
+                        if (posts_length != 0) {
+                            for (let i = 0; i < posts.length; i++) {
+                                let html_posts = `<div class="card post" style="width: 18rem;">
+                                    <div class="card-body">
+                                    <p class="card-text">`+posts[i]['description']+`</p>
+                                    <p class="card-text">`+posts[i]['created_at']+`</p>
+                                    <a href="#" class="btn btn-primary">`+posts[i]['username']+`</a>
+                                    </div>
+                                </div>`;
+                                $("#posts").append(html_posts);
+                            }
+                            initial_limit+=posts_length;
                         }
-                        $("#posts").html(html_posts);
                     }
                 });
-            });
-            $("#refresh_posts").click();
+            }
+            refreshPosts();
             $("#description").keypress(function(e) {
                 if (e.which == 13) {
                     $("#post").click();
                 }
             });
+            window.onscroll = function(ev) {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    refreshPosts();
+                }
+            };
             $("#post").click(function() {
                 let description = $("#description").val();
                 if (description != "") {
@@ -115,10 +153,29 @@
                             user_id: <?php echo $user['user_id']; ?>
                         },
                         success: function (data) {
-                            if (data != 1) {
-                                sweetAlert("Warning...", data, "error");
-                            } else {
-                                $("#refresh_posts").click();
+                            data = JSON.parse(data);
+                            let post_id = data[0].post_id;
+                            if (data.length) {
+                                $.ajax({
+                                    url: "./php/getPost.php",
+                                    type: "POST",
+                                    data: {
+                                        post_id: post_id
+                                    },
+                                    success: function (posts) {
+                                        posts = JSON.parse(posts);
+                                        posts = posts[0];
+                                        let html_posts = `<div class="card post" style="width: 18rem;">
+                                            <div class="card-body">
+                                            <p class="card-text">`+posts['description']+`</p>
+                                            <p class="card-text">`+posts['created_at']+`</p>
+                                            <a href="#" class="btn btn-primary">`+posts['username']+`</a>
+                                            </div>
+                                        </div>`;
+                                        $("#posts").prepend(html_posts);
+                                        initial_limit+=1;
+                                    }
+                                });
                                 $("#description").val("");
                             }
                         }

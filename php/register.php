@@ -9,6 +9,8 @@
 
     if (strlen($email) == 0 || strlen($password) == 0 || strlen($username) == 0) {
         $err_message = "Please complete with your email/password/username.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $err_message = "Invalid email format";
     } else {
         $query = "SELECT * FROM users WHERE email='".$email."' OR username='".$username."' LIMIT 1";
         $check_user = $database->query($query);
