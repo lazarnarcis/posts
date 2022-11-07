@@ -85,17 +85,22 @@
                 if (admin != 1) {
                     sweetAlert("Oops..", "You don't have admin role!", "error");
                 } else {
-                    if (!$("#posts").html()) {
-                        sweetAlert("Oops..", "No posts to delete!", "error");
-                    } else {
-                        $.ajax({
-                            url: "./php/deletePosts.php",
-                            success: function (data) {
-                                sweetAlert("Success!", "The posts have been deleted!");
-                                $("#posts").html("");
+                    $.ajax({
+                        url: "./php/getAllPosts.php",
+                        success: function (data) {
+                            if (data == 0) {
+                                sweetAlert("Oops..", "No posts to delete!", "error");
+                            } else {
+                                $.ajax({
+                                    url: "./php/deletePosts.php",
+                                    success: function (data) {
+                                        sweetAlert("Success!", "The posts have been deleted!");
+                                        $("#posts").html("");
+                                    }
+                                });
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
             $("#refresh_posts").click(function() {
@@ -117,13 +122,7 @@
                         let posts_length = posts.length;
                         if (posts_length != 0) {
                             for (let i = 0; i < posts.length; i++) {
-                                let html_posts = `<div class="card post" style="width: 18rem;">
-                                    <div class="card-body">
-                                    <p class="card-text">`+posts[i]['description']+`</p>
-                                    <p class="card-text">`+posts[i]['created_at']+`</p>
-                                    <a href="#" class="btn btn-primary">`+posts[i]['username']+`</a>
-                                    </div>
-                                </div>`;
+                                let html_posts = createPost(posts[i]['description'], posts[i]['created_at'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id']);
                                 $("#posts").append(html_posts);
                             }
                             initial_limit+=posts_length;
@@ -142,6 +141,40 @@
                     refreshPosts();
                 }
             };
+            $(document).on("click", ".delete-post", function() {
+                let post_id = $(this).data("post-id");
+                $.ajax({
+                    url: "./php/deletePost.php",
+                    type: "POST",
+                    data: {
+                        post_id: post_id
+                    },
+                    success: function (data) {
+                        if (data == 1) {
+                            $(`.card-post-${post_id}`).css("display", "none");
+                            sweetAlert("Done!", "The post has been deleted!");
+                        } else {
+                            sweetAlert("Warning..", data, "error");
+                        }
+                    }
+                });
+            });
+            function createPost(description, created_at, username, post_id, post_user_id) {
+                let post_delete_button = ``;
+                let user_id = '<?php echo $user['user_id']; ?>';
+                let admin = '<?php echo $user['admin']; ?>';
+                if (post_user_id == user_id || admin == 1) {
+                    post_delete_button = `<a href="#" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</a>`;
+                }
+                let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
+                    <div class="card-body">
+                    <p class="card-text">${description}</p>
+                    <p class="card-text">${created_at}</p>
+                    ${post_delete_button}
+                    </div>
+                </div>`;
+                return post;
+            }
             $("#post").click(function() {
                 let description = $("#description").val();
                 if (description != "") {
@@ -165,14 +198,8 @@
                                     success: function (posts) {
                                         posts = JSON.parse(posts);
                                         posts = posts[0];
-                                        let html_posts = `<div class="card post" style="width: 18rem;">
-                                            <div class="card-body">
-                                            <p class="card-text">`+posts['description']+`</p>
-                                            <p class="card-text">`+posts['created_at']+`</p>
-                                            <a href="#" class="btn btn-primary">`+posts['username']+`</a>
-                                            </div>
-                                        </div>`;
-                                        $("#posts").prepend(html_posts);
+                                        let html_post = createPost(posts['description'], posts['created_at'], posts['username'], posts['post_id'], posts['user_id']);
+                                        $("#posts").prepend(html_post);
                                         initial_limit+=1;
                                     }
                                 });
