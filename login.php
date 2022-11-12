@@ -19,10 +19,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <?php 
+        echo $jquery->jquery(); 
         echo $bootstrap->bootstrap4Css();
         echo $bootstrap->bootstrap4JS();
         echo $sweetAlert->sweetAlert();
-        echo $jquery->jquery(); 
     ?>
     <style>
         #login_form {

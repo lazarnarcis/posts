@@ -8,7 +8,6 @@
     
         function bootstrap4JS() {
             $bootstrap_links = "";
-            $bootstrap_links .= '<script src="./js/jquery_slim.js" crossorigin="anonymous"></script>';
             $bootstrap_links .= '<script src="./js/bootstrap_popper.js" crossorigin="anonymous"></script>';
             $bootstrap_links .= '<script src="./js/bootstrap_min.js" crossorigin="anonymous"></script>';
             return $bootstrap_links;
