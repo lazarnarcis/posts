@@ -93,25 +93,22 @@
     </div>
     <script>
         $(document).ready(function() {
-            function sweetAlert(title, message, type = "success") {
-                Swal.fire(title, message, type);
-            }
             let initial_limit = 0;
             $("#delete_posts").click(function() {
                 let admin = '<?php echo $user['admin']; ?>';
                 if (admin != 1) {
-                    sweetAlert("Oops..", "You don't have admin role!", "error");
+                    sweetAlert("You don't have admin role!", "error");
                 } else {
                     $.ajax({
                         url: "./php/getAllPosts.php",
                         success: function (data) {
                             if (data == 0) {
-                                sweetAlert("Oops..", "No posts to delete!", "error");
+                                sweetAlert("No posts to delete!", "error");
                             } else {
                                 $.ajax({
                                     url: "./php/deletePosts.php",
                                     success: function (data) {
-                                        sweetAlert("Success!", "The posts have been deleted!");
+                                        sweetAlert("The posts have been deleted!");
                                         $("#posts").html("");
                                     }
                                 });
@@ -173,6 +170,8 @@
                         let username = posts.username;
                         let post_id = posts.post_id;
                         let description = posts.description;
+                        let created_at = posts.created_at;
+                        let updated_at = posts.updated_at;
 
                         $("#edit_post_modal .modal-title").html(`Modify post id ${post_id} (created by: ${username})`);
                         let modal_body = `
@@ -182,6 +181,14 @@
                                     <label for="description_post">Post Description</label>
                                     <textarea class="form-control" name="description_post" id="description_post" rows="3">${description}</textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label for="created_at_post">Created At</label>
+                                    <input class="form-control" disabled name="created_at_post" id="created_at_post" value="${created_at}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="last_modified_post">Last Modified</label>
+                                    <input class="form-control" disabled name="last_modified_post" id="last_modified_post" value="${updated_at}">
+                                </div>
                             </form>
                         `;
                         $("#edit_post_modal .modal-body").html(modal_body);
@@ -189,16 +196,20 @@
                 });
             });
             $("#submit_modify_form").click(function() {
+                if ($("#description_post").val() == "") {
+                    sweetAlert("You must have a description!", "error");
+                    return;
+                }
                 $.ajax({
                     url: "./php/modifyPost.php",
                     type: "POST",
                     data: $("#modify_post").serialize(),
                     success: function (data) {
                         $("#edit_post_modal").modal('hide');
-                        sweetAlert("Done!", "The post has been modified!");
+                        sweetAlert("The post has been modified!");
                         setTimeout(() => window.location.reload(), 1000);
                     }
-                })
+                });
             });
             $(document).on("click", ".delete-post", function() {
                 let post_id = $(this).data("post-id");
@@ -211,9 +222,9 @@
                     success: function (data) {
                         if (data == 1) {
                             $(`.card-post-${post_id}`).css("display", "none");
-                            sweetAlert("Done!", "The post has been deleted!");
+                            sweetAlert("The post has been deleted!");
                         } else {
-                            sweetAlert("Warning..", data, "error");
+                            sweetAlert(data, "error");
                         }
                     }
                 });
@@ -223,8 +234,10 @@
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
                 if (post_user_id == user_id || admin == 1) {
-                    post_delete_button += `<button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>`;
-                    post_delete_button += `<button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>`;
+                    post_delete_button += `
+                        <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
+                        <button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>
+                    `;
                 }
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
@@ -268,7 +281,7 @@
                         }
                     });
                 } else {
-                    sweetAlert("Oops!..", "You need a description to create a post!", "error");
+                    sweetAlert("You need a description to create a post!", "error");
                 }
             });
             $("#logout").click(function() {
@@ -279,7 +292,7 @@
                         if (data == 1) {
                             window.location = "login.php";
                         } else {
-                            sweetAlert("Warning...", data, "error");
+                            sweetAlert(data, "error");
                         }
                     }
                 });

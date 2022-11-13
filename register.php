@@ -54,9 +54,6 @@
     </div>
     <script>
         $(document).ready(function() {
-            function sweetAlert(title, message, type = "success") {
-                Swal.fire(title, message, type);
-            }
             $("#submit").click(function() {
                 $.ajax({
                     url: "./php/register.php",
@@ -64,9 +61,9 @@
                     data: $("#register_form").serialize(),
                     success: function (data) {
                         if (data != 1) {
-                            sweetAlert("Warning...", data, "error");
+                            sweetAlert(data, "error");
                         } else {
-                            sweetAlert("Success!", "Your account has been created!");
+                            sweetAlert("Your account has been created!");
                             setTimeout(() => {
                                 window.location = "index.php";
                             }, 1000);

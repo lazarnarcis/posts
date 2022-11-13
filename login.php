@@ -51,9 +51,6 @@
     </div>
     <script>
         $(document).ready(function() {
-            function sweetAlert(title, message, type = "success") {
-                Swal.fire(title, message, type);
-            }
             $("#submit").click(function() {
                 $.ajax({
                     url: "./php/login.php",
@@ -61,12 +58,9 @@
                     data: $("#login_form").serialize(),
                     success: function (data) {
                         if (data != 1) {
-                            sweetAlert("Warning...", data, "error");
+                            sweetAlert(data, "error");
                         } else {
-                            sweetAlert("Success!", "You are logged in now!");
-                            setTimeout(() => {
-                                window.location = "index.php";
-                            }, 1000);
+                            window.location = "index.php";
                         }
                     }
                 });
