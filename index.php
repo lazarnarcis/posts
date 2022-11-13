@@ -70,8 +70,10 @@
     </div>
     <div class="d-flex justify-content-center">
         <button class="btn btn-primary" type="button" id="refresh_posts">Refresh Posts</button>
-        &nbsp;
-        <button class="btn btn-warning" type="button" id="delete_posts"><span style="color: white;">Delete Posts</span></button>
+        <?php if ($user['admin'] != 0) { ?>
+            &nbsp;
+            <button class="btn btn-warning" type="button" id="delete_posts"><span style="color: white;">Delete Posts</span></button>
+        <?php } ?>
     </div>
     <div id="posts" class="d-flex justify-content-center align-items-center"></div>
     <div class="modal fade" id="edit_post_modal" tabindex="-1" role="dialog" aria-labelledby="edit_post_modal_label" aria-hidden="true">
@@ -93,35 +95,25 @@
     </div>
     <script>
         $(document).ready(function() {
-            let initial_limit = 0;
-            $("#delete_posts").click(function() {
+            function createPost(description, created_at, username, post_id, post_user_id) {
+                let post_delete_button = ``;
+                let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
-                if (admin != 1) {
-                    sweetAlert("You don't have admin role!", "error");
-                } else {
-                    $.ajax({
-                        url: "./php/getAllPosts.php",
-                        success: function (data) {
-                            if (data == 0) {
-                                sweetAlert("No posts to delete!", "error");
-                            } else {
-                                $.ajax({
-                                    url: "./php/deletePosts.php",
-                                    success: function (data) {
-                                        sweetAlert("The posts have been deleted!");
-                                        $("#posts").html("");
-                                    }
-                                });
-                            }
-                        }
-                    });
+                if (post_user_id == user_id || admin == 1) {
+                    post_delete_button += `
+                        <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
+                        <button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>
+                    `;
                 }
-            });
-            $("#refresh_posts").click(function() {
-                initial_limit = 0;
-                $("#posts").html("");
-                refreshPosts();
-            });
+                let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
+                    <div class="card-body">
+                    <p class="card-text">${description}</p>
+                    <p class="card-text">${created_at}</p>
+                    ${post_delete_button}
+                    </div>
+                </div>`;
+                return post;
+            }
             function refreshPosts() {
                 $.ajax({
                     url: "./php/getPosts.php",
@@ -144,13 +136,37 @@
                     }
                 });
             }
+            let initial_limit = 0;
+            $("#delete_posts").click(function() {
+                $.ajax({
+                    url: "./php/getAllPosts.php",
+                    success: function (data) {
+                        if (data == 0) {
+                            sweetAlert("No posts to delete!", "error");
+                        } else {
+                            $.ajax({
+                                url: "./php/deletePosts.php",
+                                success: function (data) {
+                                    sweetAlert("The posts have been deleted!");
+                                    $("#posts").html("");
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            $("#refresh_posts").click(function() {
+                initial_limit = 0;
+                $("#posts").html("");
+                refreshPosts();
+            });
             refreshPosts();
             $("#description").keypress(function(e) {
                 if (e.which == 13) {
                     $("#post").click();
                 }
             });
-            window.onscroll = function(ev) {
+            window.onscroll = function() {
                 if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                     refreshPosts();
                 }
@@ -229,25 +245,6 @@
                     }
                 });
             });
-            function createPost(description, created_at, username, post_id, post_user_id) {
-                let post_delete_button = ``;
-                let user_id = '<?php echo $user['user_id']; ?>';
-                let admin = '<?php echo $user['admin']; ?>';
-                if (post_user_id == user_id || admin == 1) {
-                    post_delete_button += `
-                        <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
-                        <button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>
-                    `;
-                }
-                let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
-                    <div class="card-body">
-                    <p class="card-text">${description}</p>
-                    <p class="card-text">${created_at}</p>
-                    ${post_delete_button}
-                    </div>
-                </div>`;
-                return post;
-            }
             $("#post").click(function() {
                 let description = $("#description").val();
                 if (description != "") {
@@ -280,8 +277,6 @@
                             }
                         }
                     });
-                } else {
-                    sweetAlert("You need a description to create a post!", "error");
                 }
             });
             $("#logout").click(function() {

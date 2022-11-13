@@ -63,10 +63,7 @@
                         if (data != 1) {
                             sweetAlert(data, "error");
                         } else {
-                            sweetAlert("Your account has been created!");
-                            setTimeout(() => {
-                                window.location = "index.php";
-                            }, 1000);
+                            window.location = "index.php";
                         }
                     }
                 });

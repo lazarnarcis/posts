@@ -1,6 +1,6 @@
-
 <?php
-    require("database.php");
+    $dirname = dirname(__FILE__);
+    require($dirname."/../database.php");
     $database = new Database();
 
     class api {

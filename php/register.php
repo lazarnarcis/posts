@@ -2,9 +2,22 @@
     session_start();
     require("../database.php");
     $database = new Database();
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $username = $_POST['username'];
+    
+    $email = NULL;
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+    }
+    $password = NULL;
+    if (isset($_POST['password'])) {
+        $password = $_POST['password'];
+    }
+    $username = NULL;
+    if (isset($_POST['username'])) {
+        $username = $_POST['username'];
+    }
+    if (!isset($username) || !isset($password) || !isset($email)) {
+        return;
+    }
     $err_message = 1;
 
     if (strlen($email) == 0 || strlen($password) == 0 || strlen($username) == 0) {
