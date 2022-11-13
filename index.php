@@ -50,10 +50,10 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" disabled href="#">Welcome, <?php echo $user['username']; ?>!</a>
+                    <a class="nav-link" href="#" data-user-id="<?php echo $user['user_id']; ?>" id="open_my_account">My account</a>
                 </li>
             </ul>
             <button type="button" class="btn btn-danger" id="logout">Logout</button>
@@ -99,6 +99,7 @@
                 let post_delete_button = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
+                
                 if (post_user_id == user_id || admin == 1) {
                     post_delete_button += `
                         <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
@@ -107,9 +108,10 @@
                 }
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
-                    <p class="card-text">${description}</p>
-                    <p class="card-text">${created_at}</p>
-                    ${post_delete_button}
+                        <button type="button" class="btn btn-secondary" data-user-id="${post_user_id}" id="open_my_account">Go to ${username}'s profile</button>
+                        <p class="card-text">${description}</p>
+                        <p class="card-text">${created_at}</p>
+                        ${post_delete_button}
                     </div>
                 </div>`;
                 return post;
@@ -154,6 +156,10 @@
                         }
                     }
                 });
+            });
+            $(document).on("click", "#open_my_account", function() {
+                let user_id = $(this).data('user-id');
+                window.location = "profile.php?user_id=" + user_id;
             });
             $("#refresh_posts").click(function() {
                 initial_limit = 0;

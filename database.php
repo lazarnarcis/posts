@@ -19,6 +19,7 @@
             $query = "DELETE FROM $table".$this->string_where;
             mysqli_query($db, $query);
             self::disconnect($db);
+            $this->string_where = "";
             return true;
         }
 
@@ -56,6 +57,7 @@
                 $returndata[] = $row;
             }
             self::disconnect($db);
+            $this->string_where = "";
             return $returndata;
         }
 
@@ -77,6 +79,7 @@
             $query = "UPDATE $table SET $string_values".$this->string_where;
             mysqli_query($db, $query);
             self::disconnect($db);
+            $this->string_where = "";
             return true;
         }
 

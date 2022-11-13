@@ -6,11 +6,11 @@
     if (isset($_POST['post_id'])) {
         $post_id = $_POST['post_id'];
     }
-    $description_post = NULL;
+    $description = NULL;
     if (isset($_POST['description_post'])) {
-        $description_post = $_POST['description_post'];
+        $description = $_POST['description_post'];
     }
-    if (!isset($description_post) || !isset($post_id)) {
+    if (!isset($description) || !isset($post_id)) {
         return;
     }
     
