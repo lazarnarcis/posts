@@ -67,10 +67,14 @@
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter email" value="<?= $user['email']; ?>">
         </div>
+        <img src="" alt="test" id="demo">
         <button type="button" class="btn btn-primary" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> id="submit">Submit</button>
     </form>
     <script>
         $(document).ready(function() {
+            let profile_base64 = "<?=$user['profile_photo'];?>";
+            console.log("length: " + profile_base64.length);
+            $("#demo").attr("src", profile_base64);
             $("#submit").click(function() {
                 if ($("#username").val() == "" || $("#email").val() == "") {
                     sweetAlert("You must fill in all the data to proceed!", "error");
@@ -80,8 +84,12 @@
                         url: "./php/modifyProfile.php",
                         type: "POST",
                         data: $("#change_profile").serialize(),
-                        success: function () {
-                            window.location.reload();
+                        success: function (data) {
+                            if (data == 1) {
+                                window.location.reload();
+                            } else {
+                                sweetAlert(data, "error");
+                            }
                         }
                     });
                 }

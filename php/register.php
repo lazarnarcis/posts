@@ -2,6 +2,7 @@
     session_start();
     require("../database.php");
     $database = new Database();
+    $err_message = 1;
     
     $email = NULL;
     if (isset($_POST['email'])) {
@@ -15,13 +16,17 @@
     if (isset($_POST['username'])) {
         $username = $_POST['username'];
     }
-    if (!isset($username) || !isset($password) || !isset($email)) {
+    $profile_photo = NULL;
+    if (isset($_POST['profile_photo'])) {
+        $profile_photo = $_POST['profile_photo'];
+    }
+    
+    if (!isset($username) || !isset($password) || !isset($profile_photo) || !isset($email) || !isset($profile_photo)) {
         return;
     }
-    $err_message = 1;
 
-    if (strlen($email) == 0 || strlen($password) == 0 || strlen($username) == 0) {
-        $err_message = "Please complete with your email/password/username.";
+    if (strlen($email) == 0 || strlen($password) == 0 || strlen($profile_photo) == 0 || strlen($username) == 0 || strlen($profile_photo) == 0) {
+        $err_message = "Complete all the fields to register!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $err_message = "Invalid email format";
     } else {
@@ -31,7 +36,8 @@
             $data = array(
                 "email" => $email,
                 "password" => md5($password),
-                "username" => $username
+                "username" => $username,
+                "profile_photo" => $profile_photo
             );
             $database->insert("users", $data);
 
