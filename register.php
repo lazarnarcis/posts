@@ -54,7 +54,6 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="profile_photo" name="profile_photo">
                     <label class="custom-file-label" for="profile_photo">Choose Profile Photo</label>
-                    <div class="invalid-feedback">Example invalid custom file feedback</div>
                 </div>
             </div>
             <div>
@@ -66,7 +65,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            let profile_photo = "";
+            let profile_photo = "", accepted_images = ["jpeg", "jpg", "png", "gif"];
             $("#profile_photo").on("change", function() {
                 var file = this.files[0];  
                 var reader = new FileReader();  
@@ -74,10 +73,16 @@
                     profile_photo = reader.result;
                     let filename = $('#profile_photo').val().replace(/.*(\/|\\)/, '');
                     let ext = filename.split('.').pop();
-                    if (filename.length >= 25) {
-                        filename = filename.substr(0,25) + "..." + ext;
+                    ext = ext.toLowerCase();
+                    if (accepted_images.includes(ext)) {
+                        if (filename.length >= 25) {
+                            filename = filename.substr(0,25) + "..." + ext;
+                        }
+                        $(".custom-file-label").text(filename);
+                    } else {
+                        $(".custom-file-label").text("Choose Profile Photo");
+                        sweetAlert("The images we accept are: PNG, JPEG, JPG or GIF.", "error");
                     }
-                    $(".custom-file-label").text(filename);
                 }  
                 reader.readAsDataURL(file);
             });

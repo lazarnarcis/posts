@@ -41,58 +41,13 @@
         #profile_photo {
             height: 200px;
             width: 200px;
+            border-radius: 50%;
         }
-        .container {
-            display: block;
-            position: relative;
-            padding-left: 35px;
-            margin-bottom: 12px;
+        #change_profile_photo {
             cursor: pointer;
-            font-size: 22px;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }   
-        .container input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
         }
-        .checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 25px;
-            width: 25px;
-            background-color: #eee;
-        }
-        .container:hover input ~ .checkmark {
-            background-color: #ccc;
-        }
-        .container input:checked ~ .checkmark {
-            background-color: #2196F3;
-        }
-        .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-        }
-        .container input:checked ~ .checkmark:after {
-            display: block;
-        }
-        .container .checkmark:after {
-            left: 9px;
-            top: 5px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 3px 3px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg);
+        #change_profile {
+            margin: 0 25%;
         }
     </style>
 </head>
@@ -114,12 +69,14 @@
             <button type="button" class="btn btn-danger" id="logout">Logout</button>
         </div>
     </nav>
-    <h1 class="text-center"><?= $user['username']; ?>'s profile</h1>
-    <form id="change_profile">
+    <div class="text-center" style="margin-top: 15px;">
         <img alt="Profile photo" id="profile_photo" class="img-thumbnail">
+        <h1 class="text-center"><?= $user['username']; ?></h1>
+    </div>
+    <form id="change_profile">
         <input type="hidden" name="user_id" id="user_id" value="<?= $user['user_id']; ?>">
         <div class="form-group">
-            <label for="email">Username</label>
+            <label for="username">Username</label>
             <input type="text" class="form-control" id="username" name="username" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter Username" value="<?= $user['username']; ?>">
         </div>
         <div class="form-group">
@@ -128,27 +85,23 @@
         </div>
         <?php if ($my_account['admin'] != 0 || $user['user_id'] == $my_account['user_id']) { ?>
             <div class="form-group">
-                <label class="container">
-                    <input type="checkbox" id="checkbox_photo">
-                    <span class="checkmark"></span>
-                </label>
-                <label for="change_profile_photo">Change Photo</label> 
+                <label for="checkbox_photo">Change Photo</label> 
+                <input type="checkbox" id="checkbox_photo">
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="change_profile_photo" name="change_profile_photo">
-                    <label class="custom-file-label" for="change_profile_photo">Change Profile Photo</label>
-                    <div class="invalid-feedback">Example invalid custom file feedback</div>
+                    <label class="custom-file-label" for="change_profile_photo">Choose Profile Photo</label>
                 </div>
             </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="submit">Update</button>
+            </div>
         <?php } ?>
-        <div class="form-group">
-            <button type="button" class="btn btn-primary" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> id="submit">Submit</button>
-        </div>
     </form>
     <script>
         $(document).ready(function() {
-            let profile_base64 = "<?=$user['profile_photo'];?>";
-            let condition_photo, profile_photo = "";
+            let profile_base64 = "<?= $user['profile_photo']; ?>", condition_photo, profile_photo = "";
             $("#profile_photo").attr("src", profile_base64);
+            let accepted_images = ["jpeg", "jpg", "png", "gif"];
 
             showChangePhoto();
             function showChangePhoto(condition = false) {
@@ -175,10 +128,16 @@
                     profile_photo = reader.result;
                     let filename = $('#change_profile_photo').val().replace(/.*(\/|\\)/, '');
                     let ext = filename.split('.').pop();
-                    if (filename.length >= 25) {
-                        filename = filename.substr(0,25) + "..." + ext;
+                    ext = ext.toLowerCase();
+                    if (accepted_images.includes(ext)) {
+                        if (filename.length >= 25) {
+                            filename = filename.substr(0,25) + "..." + ext;
+                        }
+                        $(".custom-file-label").text(filename);
+                    } else {
+                        $(".custom-file-label").text("Choose Profile Photo");
+                        sweetAlert("The images we accept are: PNG, JPEG, JPG or GIF.", "error");
                     }
-                    $(".custom-file-label").text(filename);
                 }  
                 reader.readAsDataURL(file);
             });
