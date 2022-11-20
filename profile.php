@@ -37,6 +37,64 @@
         echo $bootstrap->bootstrap4JS();
         echo $sweetAlert->sweetAlert();
     ?>
+    <style>
+        #profile_photo {
+            height: 200px;
+            width: 200px;
+        }
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 22px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }   
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+        }
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -58,7 +116,8 @@
     </nav>
     <h1 class="text-center"><?= $user['username']; ?>'s profile</h1>
     <form id="change_profile">
-        <input type="hidden" name="user_id" value="<?= $user['user_id']; ?>">
+        <img alt="Profile photo" id="profile_photo" class="img-thumbnail">
+        <input type="hidden" name="user_id" id="user_id" value="<?= $user['user_id']; ?>">
         <div class="form-group">
             <label for="email">Username</label>
             <input type="text" class="form-control" id="username" name="username" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter Username" value="<?= $user['username']; ?>">
@@ -67,23 +126,79 @@
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter email" value="<?= $user['email']; ?>">
         </div>
-        <img src="" alt="test" id="demo">
-        <button type="button" class="btn btn-primary" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> id="submit">Submit</button>
+        <?php if ($my_account['admin'] != 0 || $user['user_id'] == $my_account['user_id']) { ?>
+            <div class="form-group">
+                <label class="container">
+                    <input type="checkbox" id="checkbox_photo">
+                    <span class="checkmark"></span>
+                </label>
+                <label for="change_profile_photo">Change Photo</label> 
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="change_profile_photo" name="change_profile_photo">
+                    <label class="custom-file-label" for="change_profile_photo">Change Profile Photo</label>
+                    <div class="invalid-feedback">Example invalid custom file feedback</div>
+                </div>
+            </div>
+        <?php } ?>
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> id="submit">Submit</button>
+        </div>
     </form>
     <script>
         $(document).ready(function() {
             let profile_base64 = "<?=$user['profile_photo'];?>";
-            console.log("length: " + profile_base64.length);
-            $("#demo").attr("src", profile_base64);
+            let condition_photo, profile_photo = "";
+            $("#profile_photo").attr("src", profile_base64);
+
+            showChangePhoto();
+            function showChangePhoto(condition = false) {
+                if (condition == false) {
+                    $(".custom-file").hide();
+                    condition_photo = "no";
+                } else {
+                    $(".custom-file").show();
+                    condition_photo = "yes";
+                }
+            }
+            $("#checkbox_photo").on("change", function() {
+                if ($(this).is(":checked")) {
+                    showChangePhoto(true);
+                } else {
+                    showChangePhoto();
+                }
+            });
+
+            $("#change_profile_photo").on("change", function() {
+                var file = this.files[0];  
+                var reader = new FileReader();  
+                reader.onloadend = function() {  
+                    profile_photo = reader.result;
+                    let filename = $('#change_profile_photo').val().replace(/.*(\/|\\)/, '');
+                    let ext = filename.split('.').pop();
+                    if (filename.length >= 25) {
+                        filename = filename.substr(0,25) + "..." + ext;
+                    }
+                    $(".custom-file-label").text(filename);
+                }  
+                reader.readAsDataURL(file);
+            });
+
             $("#submit").click(function() {
                 if ($("#username").val() == "" || $("#email").val() == "") {
                     sweetAlert("You must fill in all the data to proceed!", "error");
                     return;
                 } else {
+                    let form_data = {
+                        user_id: $("#user_id").val(),
+                        username: $("#username").val(),
+                        email: $("#email").val(),
+                        profile_photo: profile_photo,
+                        change_photo: condition_photo
+                    };
                     $.ajax({
                         url: "./php/modifyProfile.php",
                         type: "POST",
-                        data: $("#change_profile").serialize(),
+                        data: form_data,
                         success: function (data) {
                             if (data == 1) {
                                 window.location.reload();

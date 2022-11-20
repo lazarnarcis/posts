@@ -73,8 +73,9 @@
                 reader.onloadend = function() {  
                     profile_photo = reader.result;
                     let filename = $('#profile_photo').val().replace(/.*(\/|\\)/, '');
+                    let ext = filename.split('.').pop();
                     if (filename.length >= 25) {
-                        filename = filename.substr(0,25) + "...";
+                        filename = filename.substr(0,25) + "..." + ext;
                     }
                     $(".custom-file-label").text(filename);
                 }  
