@@ -79,17 +79,17 @@
     <div class="modal fade" id="edit_post_modal" tabindex="-1" role="dialog" aria-labelledby="edit_post_modal_label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="edit_post_modal_label"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submit_modify_form">Save changes</button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit_post_modal_label"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submit_modify_form">Save changes</button>
+                </div>
             </div>
         </div>
     </div>

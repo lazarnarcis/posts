@@ -39,15 +39,23 @@
     ?>
     <style>
         #profile_photo {
+            cursor: pointer;
             height: 200px;
             width: 200px;
             border-radius: 50%;
+            transition: .3s all;
         }
         #change_profile_photo {
             cursor: pointer;
         }
         #change_profile {
             margin: 0 25%;
+        }
+        #profile_photo_modal {
+            width: 100%;
+        }
+        #profile_photo:hover {
+            filter: brightness(0.6);
         }
     </style>
 </head>
@@ -97,6 +105,22 @@
             </div>
         <?php } ?>
     </form>
+    <div class="modal fade" id="img_thumbnail_modal" tabindex="-1" role="dialog" aria-labelledby="img_thumbnail_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="img_thumbnail_modal_label"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
             let profile_base64 = "<?= $user['profile_photo']; ?>", condition_photo, profile_photo = "";
@@ -119,6 +143,13 @@
                 } else {
                     showChangePhoto();
                 }
+            });
+
+            $(".img-thumbnail").click(function() {
+                let img = $("<img id='profile_photo_modal'>");
+                img.attr("src", $("#profile_photo").attr("src"));
+                $("#img_thumbnail_modal .modal-body").html(img);
+                $("#img_thumbnail_modal").modal("show");
             });
 
             $("#change_profile_photo").on("change", function() {
