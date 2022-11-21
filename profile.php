@@ -44,6 +44,7 @@
             width: 200px;
             border-radius: 50%;
             transition: .3s all;
+            padding: 0;
         }
         #change_profile_photo {
             cursor: pointer;
@@ -149,6 +150,8 @@
                 let img = $("<img id='profile_photo_modal'>");
                 img.attr("src", $("#profile_photo").attr("src"));
                 $("#img_thumbnail_modal .modal-body").html(img);
+                let username = '<?php echo $user['username']; ?>';
+                $("#img_thumbnail_modal .modal-title").html(username+"'s profile photo");
                 $("#img_thumbnail_modal").modal("show");
             });
 
