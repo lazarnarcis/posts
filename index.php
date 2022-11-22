@@ -238,6 +238,11 @@
                 });
             });
             $("#post").click(function() {
+                let banned = '<?=$user['banned'];?>';
+                if (banned != 0) {
+                    sweetAlert("You can not post something because you are banned!", "error");
+                    return;
+                }
                 let description = $("#description").val();
                 if (description != "") {
                     $.ajax({

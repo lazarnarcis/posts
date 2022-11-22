@@ -74,7 +74,7 @@
         <?php
             $user_id = $user['user_id'];
             if ($user['admin'] != 0) {
-                echo '<button type="button" class="btn btn-success" disabled>Admin</button>';
+                echo '<button type="button" class="btn btn-info" style="color: black;" disabled>Admin</button>';
             }
             if ($my_account['admin'] != 0 && $user['user_id'] != $my_account['user_id']) {
                 if ($user['banned'] == 0) {
@@ -134,12 +134,21 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ban_user_modal_label"></h5>
+                    <h5 class="modal-title" id="ban_user_modal_label">Ban <?=$user['username'];?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body"></div>
+                <div class="modal-body">
+                    <form id="form_user_modal">
+                        <input type="hidden" name="user_id" value="<?=$my_account['user_id'];?>">
+                        <input type="hidden" name="banned_user_id" value="<?=$user['user_id'];?>">
+                        <div class="form-group">
+                            <label for="ban_reason">Ban Reason</label>
+                            <input type="text" class="form-control" name="ban_reason" id="ban_reason" placeholder="Ban Reason">
+                        </div>
+                    </form>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="submit_modify_form">Save changes</button>
@@ -172,25 +181,14 @@
             });
 
             $("#show_ban_modal").click(function() {
-                let username = '<?php echo $user['username']; ?>';
-                let user_id = '<?php echo $my_account['user_id']; ?>';
-                let banned_user_id = '<?php echo $user['user_id']; ?>';
-                $("#ban_user_modal .modal-title").html("Ban " + username);
-                let form_modal = `
-                    <form id="form_user_modal">
-                        <input type="hidden" name="user_id" value="${user_id}">
-                        <input type="hidden" name="banned_user_id" value="${banned_user_id}">
-                        <div class="form-group">
-                            <label for="ban_reason">Ban Reason</label>
-                            <input class="form-control" name="ban_reason" id="ban_reason" placeholder="Ban Reason">
-                        </div>
-                    </form>
-                `;
-                $("#ban_user_modal .modal-body").html(form_modal);
                 $("#ban_user_modal").modal("show");
             });
             
             $("#submit_modify_form").click(function() {
+                if ($("#ban_reason").val() == "") {
+                    sweetAlert("You definitely have to give a reason!", "error");
+                    return;
+                }
                 $.ajax({
                     url: "./php/banUser.php",
                     type: "POST",
