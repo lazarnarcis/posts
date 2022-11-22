@@ -7,11 +7,13 @@
     include("./utils/bootstrap.php");
     include("./utils/jquery.php");
     include("./utils/sweetAlert.php");
+    include("./uihandler.php");
     require("./php/api.php");
     $bootstrap = new Bootstrap();
     $jquery = new jQuery();
     $sweetAlert = new sweetAlert();
     $api = new api();
+    $ui = new UIHandler();
 
     $user = $api->userInfo($_SESSION['user_id']);
 ?>
@@ -42,23 +44,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Facebook</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-user-id="<?php echo $user['user_id']; ?>" id="open_my_account">My account</a>
-                </li>
-            </ul>
-            <button type="button" class="btn btn-danger" id="logout">Logout</button>
-        </div>
-    </nav>
+    <?php echo $ui->nav($user['user_id']); ?>
     <h1 class="text-center">Feed</h1>
     <div class="container">
         <div class="input-group mb-3">

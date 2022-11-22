@@ -11,11 +11,13 @@
     include("./utils/bootstrap.php");
     include("./utils/jquery.php");
     include("./utils/sweetAlert.php");
+    include("./uihandler.php");
     require("./php/api.php");
     $bootstrap = new Bootstrap();
     $jquery = new jQuery();
     $sweetAlert = new sweetAlert();
     $api = new api();
+    $ui = new UIHandler();
 
     $my_user_id = $_SESSION['user_id'];
     $profile_user_id = $_GET['user_id'];
@@ -61,23 +63,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Facebook</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#" data-user-id="<?php echo $my_account['user_id']; ?>" id="open_my_account">My account</a>
-                </li>
-            </ul>
-            <button type="button" class="btn btn-danger" id="logout">Logout</button>
-        </div>
-    </nav>
+    <?php echo $ui->nav($my_account['user_id'], $user['user_id']); ?>
     <div class="text-center" style="margin-top: 15px;">
         <img alt="Profile photo" id="profile_photo" class="img-thumbnail">
         <h1 class="text-center"><?= $user['username']; ?></h1>
