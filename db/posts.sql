@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2022 at 08:24 PM
+-- Generation Time: Nov 22, 2022 at 10:13 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `facebook`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bans`
+--
+
+CREATE TABLE `bans` (
+  `ban_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `banned_user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `reason` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -46,6 +60,7 @@ CREATE TABLE `users` (
   `username` varchar(64) NOT NULL,
   `email` varchar(64) NOT NULL,
   `admin` int(11) NOT NULL,
+  `banned` int(11) NOT NULL,
   `password` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `profile_photo` longtext NOT NULL
@@ -54,6 +69,12 @@ CREATE TABLE `users` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `bans`
+--
+ALTER TABLE `bans`
+  ADD PRIMARY KEY (`ban_id`);
 
 --
 -- Indexes for table `posts`
@@ -70,6 +91,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `bans`
+--
+ALTER TABLE `bans`
+  MODIFY `ban_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `posts`
