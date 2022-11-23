@@ -76,7 +76,10 @@
             if ($user['admin'] != 0) {
                 echo '<button type="button" class="btn btn-info" style="color: black;" disabled>Admin</button>';
             }
-            if ($my_account['admin'] != 0 && $user['user_id'] != $my_account['user_id']) {
+            if ($user['full_access'] != 0) {
+                echo '<button type="button" class="btn btn-warning" style="color: black;" disabled>Full Access</button>';
+            }
+            if ($my_account['admin'] != 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
                     echo '<button type="button" class="btn btn-warning" id="show_ban_modal">Ban</button>';
                 } else {
@@ -94,13 +97,13 @@
         <input type="hidden" name="user_id" id="user_id" value="<?= $user['user_id']; ?>">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter Username" value="<?= $user['username']; ?>">
+            <input type="text" class="form-control" id="username" name="username" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id'] && $my_account['full_access'] == 0) echo "disabled"; ?> placeholder="Enter Username" value="<?= $user['username']; ?>">
         </div>
         <div class="form-group">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id']) echo "disabled"; ?> placeholder="Enter email" value="<?= $user['email']; ?>">
+            <input type="email" class="form-control" id="email" name="email" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id'] && $my_account['full_access'] == 0) echo "disabled"; ?> placeholder="Enter email" value="<?= $user['email']; ?>">
         </div>
-        <?php if ($my_account['admin'] != 0 || $user['user_id'] == $my_account['user_id']) { ?>
+        <?php if ($my_account['admin'] != 0 || $user['user_id'] == $my_account['user_id'] || $my_account['full_access'] != 0) { ?>
             <div class="form-group">
                 <label for="checkbox_photo">Change Photo</label> 
                 <input type="checkbox" id="checkbox_photo">
@@ -182,6 +185,12 @@
 
             $("#show_ban_modal").click(function() {
                 $("#ban_user_modal").modal("show");
+            });
+
+            $("#ban_reason").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#submit_modify_form").click();
+                }
             });
             
             $("#submit_modify_form").click(function() {

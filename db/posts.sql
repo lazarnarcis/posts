@@ -60,6 +60,7 @@ CREATE TABLE `users` (
   `username` varchar(64) NOT NULL,
   `email` varchar(64) NOT NULL,
   `admin` int(11) NOT NULL,
+  `full_access` int(11) NOT NULL,
   `banned` int(11) NOT NULL,
   `password` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),

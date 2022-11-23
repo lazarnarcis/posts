@@ -56,7 +56,7 @@
     </div>
     <div class="d-flex justify-content-center">
         <button class="btn btn-primary" type="button" id="refresh_posts">Refresh Posts</button>
-        <?php if ($user['admin'] != 0) { ?>
+        <?php if ($user['admin'] != 0 || $user['full_access'] != 0) { ?>
             &nbsp;
             <button class="btn btn-warning" type="button" id="delete_posts"><span style="color: white;">Delete Posts</span></button>
         <?php } ?>
@@ -85,8 +85,9 @@
                 let post_delete_button = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
+                let full_access = '<?php echo $user['full_access']; ?>';
                 
-                if (post_user_id == user_id || admin == 1) {
+                if (post_user_id == user_id || admin != 0 || full_access != 0) {
                     post_delete_button += `
                         <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
                         <button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>

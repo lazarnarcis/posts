@@ -5,7 +5,7 @@
     $err_message = 1;
     $user = $api->userInfo($_SESSION['user_id']);
 
-    if ($user['admin'] == 0) {
+    if ($user['admin'] == 0 && $user['full_access'] == 0) {
         return;
     }
     $deletePosts = $database->deleteRow("posts");
