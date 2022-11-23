@@ -64,6 +64,10 @@
             color: red;
             text-shadow: 0.5px 0.5px 0.5px black;
         }
+        .btn:not(#submit) {
+            margin-left: 5px;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -74,12 +78,12 @@
         <?php
             $user_id = $user['user_id'];
             if ($user['admin'] != 0) {
-                echo '<button type="button" class="btn btn-info" style="color: black;" disabled>Admin</button>';
+                echo '<button type="button" class="btn btn-info" disabled>Admin</button>';
             }
             if ($user['full_access'] != 0) {
-                echo '<button type="button" class="btn btn-warning" style="color: black;" disabled>Full Access</button>';
+                echo '<button type="button" class="btn btn-warning" disabled>Full Access</button>';
             }
-            if ($my_account['admin'] != 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
+            if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
                     echo '<button type="button" class="btn btn-warning" id="show_ban_modal">Ban</button>';
                 } else {
