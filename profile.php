@@ -14,8 +14,8 @@
     include("./uihandler.php");
     require("./php/api.php");
     $bootstrap = new Bootstrap();
-    $jquery = new jQuery();
-    $sweetAlert = new sweetAlert();
+    $jquery = new jquery_class();
+    $sweetAlert = new sweet_alert();
     $api = new api();
     $ui = new UIHandler();
 

@@ -8,8 +8,8 @@
     include("./utils/jquery.php");
     include("./utils/sweetAlert.php");
     $bootstrap = new Bootstrap();
-    $jquery = new jQuery();
-    $sweetAlert = new sweetAlert();
+    $jquery = new jquery_class();
+    $sweetAlert = new sweet_alert();
 ?>
 <!DOCTYPE html>
 <html lang="en">

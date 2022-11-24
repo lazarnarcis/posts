@@ -1,13 +1,28 @@
 <?php
+    $dir_name = __DIR__;
+    require_once(realpath($dir_name.'/vendor/autoload.php'));
+    $server_ip = $_SERVER['REMOTE_ADDR'];
+    $dotenv = new Dotenv\Dotenv($dir_name);
+    $dotenv->load();
+    $whitelist = array('127.0.0.1', '::1');
+
+    if (!in_array($server_ip, $whitelist)) {
+        $db_username = $_ENV['USER'];
+        $db_password = $_ENV['PASSWORD'];
+        $db_name = $_ENV['DATABASE'];
+        $db_host = $_ENV['HOST'];
+    } else {
+        $db_username = "root";
+        $db_password = "";
+        $db_name = "facebook";
+        $db_host = "localhost";
+    }
+
     class Database {
-        public $host = "localhost";
-        public $password = "";
-        public $username = "root";
-        public $database = "facebook";
         public $string_where = "";
         
         function connect() {
-            return mysqli_connect($this->host, $this->username, $this->password, $this->database);
+            return mysqli_connect($GLOBALS['db_host'], $GLOBALS['db_username'], $GLOBALS['db_password'], $GLOBALS['db_name']);
         }
 
         function disconnect($db) {

@@ -1,5 +1,5 @@
 <?php
-    class sweetAlert {
+    class sweet_alert {
         function sweetAlert() {
             $sweet_links = '';
             $sweet_links .= '<script src="./js/sweetalert.js"></script>';
