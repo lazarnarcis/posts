@@ -38,6 +38,18 @@
             return true;
         }
 
+        function join($join_type = "LEFT", $table_name, $condition1, $condition2, $rename_table = NULL) {
+            if ($rename_table == NULL) {
+                $this->string_where.=" $join_type JOIN $table_name ON $condition1=$condition2";
+            } else {
+                $this->string_where.=" $join_type JOIN $table_name AS $rename_table ON $condition1=$condition2";
+            }
+        }
+
+        function orderBy($column, $type = "ASC") {
+            $this->string_where.=" ORDER BY $column $type";
+        }
+
         function deleteColumn($table, $column) {
             $db = self::connect();
             $query = "ALTER TABLE $table DROP COLUMN $column";
