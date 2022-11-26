@@ -80,6 +80,9 @@
             if ($user['admin'] != 0) {
                 echo '<button type="button" class="btn btn-info" disabled>Admin</button>';
             }
+            if ($my_account['admin'] != 0) {
+                echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
+            }
             if ($user['full_access'] != 0) {
                 echo '<button type="button" class="btn btn-warning" disabled>Full Access</button>';
             }
@@ -126,6 +129,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="img_thumbnail_modal_label"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="user_logs_modal" tabindex="-1" role="dialog" aria-labelledby="user_logs_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="user_logs_modal_label"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -185,6 +204,29 @@
                 } else {
                     showChangePhoto();
                 }
+            });
+
+            $("#show_logs").click(function() {
+                let user_id = "<?php echo $user['user_id']; ?>";
+                let username = "<?php echo $user['username']; ?>";
+                $.ajax({
+                    url: "./php/getUserLogs.php",
+                    type: "POST",
+                    data: {
+                        user_id: user_id
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        let text = "";
+                        for (let i = 0; i < data.length; i++) {
+                            text+=data[i].text + " || " + data[i].created_at + "<br>";
+                        }
+                        $("#user_logs_modal .modal-title").html(`${username}'s Logs`);
+                        let modal_body = text;
+                        $("#user_logs_modal .modal-body").html(modal_body);
+                        $("#user_logs_modal").modal("show");
+                    }
+                });
             });
 
             $("#show_ban_modal").click(function() {

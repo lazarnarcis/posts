@@ -102,7 +102,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            function createPost(description, created_at, username, post_id, post_user_id, profile_photo) {
+            function createPost(description, username, post_id, post_user_id, profile_photo) {
                 let post_delete_button = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
@@ -122,7 +122,6 @@
                         </div>
                         <br><br><br>
                         <p class="card-text">${description}</p>
-                        <p class="card-text">${created_at}</p>
                         ${post_delete_button}
                     </div>
                 </div>`;
@@ -142,7 +141,7 @@
                         let posts_length = posts.length;
                         if (posts_length != 0) {
                             for (let i = 0; i < posts.length; i++) {
-                                let html_posts = createPost(posts[i]['description'], posts[i]['created_at'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id'], posts[i]['profile_photo']);
+                                let html_posts = createPost(posts[i]['description'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id'], posts[i]['profile_photo']);
                                 $("#posts").append(html_posts);
                             }
                             initial_limit+=posts_length;
@@ -291,7 +290,7 @@
                                     success: function (posts) {
                                         posts = JSON.parse(posts);
                                         posts = posts[0];
-                                        let html_post = createPost(posts['description'], posts['created_at'], posts['username'], posts['post_id'], posts['user_id'], posts['profile_photo']);
+                                        let html_post = createPost(posts['description'], posts['username'], posts['post_id'], posts['user_id'], posts['profile_photo']);
                                         $("#posts").prepend(html_post);
                                         initial_limit+=1;
                                     }
