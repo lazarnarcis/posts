@@ -41,6 +41,27 @@
         #posts {
             flex-direction: column;
         }
+        .profile_photo_logo {
+            height: 40px;
+            border-radius: 50%;
+            width: 40px;
+        }
+        .button_for_user {
+            border: 0;
+            background: none;
+            font-size: 20px;
+        }
+        .open_my_account {
+            display: flex;
+            float: left;
+            border-radius: 5px;
+            padding: 5px;
+            transition: .5s;
+        }
+        .open_my_account:hover {
+            background: lightgrey;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +102,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            function createPost(description, created_at, username, post_id, post_user_id) {
+            function createPost(description, created_at, username, post_id, post_user_id, profile_photo) {
                 let post_delete_button = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
@@ -95,7 +116,11 @@
                 }
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
-                        <button type="button" class="btn btn-secondary" data-user-id="${post_user_id}" id="open_my_account">Go to ${username}'s profile</button>
+                        <div class="open_my_account" data-user-id="${post_user_id}">
+                            <img src="${profile_photo}" alt="Profile photo" class="profile_photo_logo">
+                            <button type="button" class="button_for_user">${username}</button>
+                        </div>
+                        <br><br><br>
                         <p class="card-text">${description}</p>
                         <p class="card-text">${created_at}</p>
                         ${post_delete_button}
@@ -117,7 +142,7 @@
                         let posts_length = posts.length;
                         if (posts_length != 0) {
                             for (let i = 0; i < posts.length; i++) {
-                                let html_posts = createPost(posts[i]['description'], posts[i]['created_at'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id']);
+                                let html_posts = createPost(posts[i]['description'], posts[i]['created_at'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id'], posts[i]['profile_photo']);
                                 $("#posts").append(html_posts);
                             }
                             initial_limit+=posts_length;
@@ -144,7 +169,7 @@
                     }
                 });
             });
-            $(document).on("click", "#open_my_account", function() {
+            $(document).on("click", ".open_my_account", function() {
                 let user_id = $(this).data('user-id');
                 window.location = "profile.php?user_id=" + user_id;
             });
@@ -266,7 +291,7 @@
                                     success: function (posts) {
                                         posts = JSON.parse(posts);
                                         posts = posts[0];
-                                        let html_post = createPost(posts['description'], posts['created_at'], posts['username'], posts['post_id'], posts['user_id']);
+                                        let html_post = createPost(posts['description'], posts['created_at'], posts['username'], posts['post_id'], posts['user_id'], posts['profile_photo']);
                                         $("#posts").prepend(html_post);
                                         initial_limit+=1;
                                     }
