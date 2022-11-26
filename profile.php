@@ -68,6 +68,7 @@
             margin-left: 5px;
             color: white;
         }
+        <?php echo $ui->styleNav(); ?>
     </style>
 </head>
 <body>
@@ -331,23 +332,6 @@
                         }
                     });
                 }
-            });
-            $("#open_my_account").click(function() {
-                let user_id = $(this).data('user-id');
-                window.location = "profile.php?user_id=" + user_id;
-            });
-            $("#logout").click(function() {
-                $.ajax({
-                    url: "./php/logout.php",
-                    type: "POST",
-                    success: function (data) {
-                        if (data == 1) {
-                            window.location = "login.php";
-                        } else {
-                            sweetAlert(data, "error");
-                        }
-                    }
-                });
             });
         });
     </script>

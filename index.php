@@ -51,17 +51,7 @@
             background: none;
             font-size: 20px;
         }
-        .open_my_account:not(.nav-link) {
-            display: flex;
-            float: left;
-            border-radius: 5px;
-            padding: 5px;
-            transition: .5s;
-        }
-        .open_my_account:not(.nav-link):hover {
-            background: lightgrey;
-            cursor: pointer;
-        }
+        <?php echo $ui->styleNav(); ?>
     </style>
 </head>
 <body>
@@ -167,10 +157,6 @@
                         }
                     }
                 });
-            });
-            $(document).on("click", ".open_my_account", function() {
-                let user_id = $(this).data('user-id');
-                window.location = "profile.php?user_id=" + user_id;
             });
             $("#refresh_posts").click(function() {
                 initial_limit = 0;
@@ -300,19 +286,6 @@
                         }
                     });
                 }
-            });
-            $("#logout").click(function() {
-                $.ajax({
-                    url: "./php/logout.php",
-                    type: "POST",
-                    success: function (data) {
-                        if (data == 1) {
-                            window.location = "login.php";
-                        } else {
-                            sweetAlert(data, "error");
-                        }
-                    }
-                });
             });
         });
     </script>
