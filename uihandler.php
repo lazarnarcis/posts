@@ -16,7 +16,7 @@
                             <a class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item '.$profile_active.'">
-                            <a class="nav-link" href="#" data-user-id="'.$my_user_id.'" id="open_my_account">My account</a>
+                            <a class="nav-link open_my_account" href="#" data-user-id="'.$my_user_id.'">My account</a>
                         </li>
                     </ul>
                     <button type="button" class="btn btn-danger" id="logout">Logout</button>

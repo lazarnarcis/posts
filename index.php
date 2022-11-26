@@ -51,14 +51,14 @@
             background: none;
             font-size: 20px;
         }
-        .open_my_account {
+        .open_my_account:not(.nav-link) {
             display: flex;
             float: left;
             border-radius: 5px;
             padding: 5px;
             transition: .5s;
         }
-        .open_my_account:hover {
+        .open_my_account:not(.nav-link):hover {
             background: lightgrey;
             cursor: pointer;
         }
