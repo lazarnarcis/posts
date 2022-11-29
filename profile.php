@@ -97,7 +97,12 @@
             $getBan = $api->getBan($user_id);
             if ($getBan) {
                 $getUser = $api->userInfo($getBan['user_id']);
-                echo '<p class="text-center ban-text">'.$user['username'].' has been banned by '.$getUser['username'].' at '.$getBan['created_at'].'. Reason: '.$getBan['reason'].'</p>';
+                $bannedIP = $api->userInfo($user_id);
+                $banned_ip_text = NULL;
+                if ($bannedIP["ban_ip"] == 1) {
+                    $banned_ip_text .= " <span style='text-decoration: underline'>on IP</span>";
+                }
+                echo '<p class="text-center ban-text">'.$user['username'].' has been banned by '.$getUser['username'].$banned_ip_text.' at '.$getBan['created_at'].'. Reason: '.$getBan['reason'].'</p>';
             }
         ?>
     </div>
@@ -174,11 +179,15 @@
                             <label for="ban_reason">Ban Reason</label>
                             <input type="text" class="form-control" name="ban_reason" id="ban_reason" placeholder="Ban Reason">
                         </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="ban_ip" id="ban_ip">
+                            <label class="form-check-label" for="ban_ip">Ban IP</label>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="submit_modify_form">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="submit_modify_form">Ban User</button>
                 </div>
             </div>
         </div>
@@ -220,9 +229,9 @@
                         data = JSON.parse(data);
                         let text = "";
                         for (let i = 0; i < data.length; i++) {
-                            text+=data[i].text + " || " + data[i].created_at + "<br>";
+                            text+=data[i].text + " || " + data[i].created_at + " (IP: " + data[i].ip + ")<br>";
                         }
-                        $("#user_logs_modal .modal-title").html(`${username}'s Logs`);
+                        $("#user_logs_modal .modal-title").html(`${username}'s Logs (last 50 logs)`);
                         let modal_body = text;
                         $("#user_logs_modal .modal-body").html(modal_body);
                         $("#user_logs_modal").modal("show");

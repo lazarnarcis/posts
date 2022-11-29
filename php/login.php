@@ -27,7 +27,20 @@
                 $err_message = "Please enter correct password!";
             } else {
                 $_SESSION['logged'] = true;
-                $_SESSION['user_id'] = $user['user_id'];
+                $user_id = $user['user_id'];
+                $_SESSION['user_id'] = $user_id;
+                $ip = $_SERVER['REMOTE_ADDR'];
+
+                $data = array("last_ip" => $ip);
+                $database->where("user_id", $user_id);
+                $database->update("users", $data);
+
+                $data = array(
+                    "user_id" => $user_id,
+                    "ip" => $ip,
+                    "text" => $user['username'] . " just connected!"
+                );
+                $database->insert("logs", $data);
             }
         } else {
             $err_message = "Doesn't exist user with this email!";

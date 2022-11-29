@@ -44,8 +44,21 @@
             $database->where("email", $email);
             $user = $database->select("users", 1);
             $user = $user[0];
+            $user_id = $user['user_id'];
             $_SESSION['logged'] = true;
-            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['user_id'] = $user_id;
+            $ip = $_SERVER['REMOTE_ADDR'];
+
+            $data = array("last_ip" => $ip, "ip" => $ip);
+            $database->where("user_id", $user_id);
+            $database->update("users", $data);
+
+            $data = array(
+                "user_id" => $user_id,
+                "ip" => $ip,
+                "text" => $user['username'] . " just created an account!"
+            );
+            $database->insert("logs", $data);
         } else {
             $err_message = "There is already a user with this username or email!";
         }

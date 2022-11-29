@@ -10,6 +10,6 @@
     }
     $database->where("user_id", $user_id);
     $database->orderBy("created_at", "DESC");
-    $logs = $database->select("logs", 20);
+    $logs = $database->select("logs", 50);
     echo json_encode($logs);
 ?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2022 at 10:13 PM
+-- Generation Time: Nov 29, 2022 at 10:38 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -38,6 +38,20 @@ CREATE TABLE `bans` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `logs`
+--
+
+CREATE TABLE `logs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `text` text NOT NULL,
+  `ip` varchar(64) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `posts`
 --
 
@@ -64,7 +78,10 @@ CREATE TABLE `users` (
   `banned` int(11) NOT NULL,
   `password` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `profile_photo` longtext NOT NULL
+  `profile_photo` longtext NOT NULL,
+  `ip` varchar(64) NOT NULL,
+  `last_ip` varchar(64) NOT NULL,
+  `ban_ip` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -76,6 +93,12 @@ CREATE TABLE `users` (
 --
 ALTER TABLE `bans`
   ADD PRIMARY KEY (`ban_id`);
+
+--
+-- Indexes for table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `posts`
@@ -98,6 +121,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `bans`
   MODIFY `ban_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `posts`
