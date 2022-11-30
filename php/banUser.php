@@ -43,7 +43,7 @@
 
     $ip_ban_text = NULL;
     if (isset($_POST['ban_ip'])) {
-        $ip_ban_text = " on IP ";
+        $ip_ban_text = " on IP";
     }
 
     $data = array(

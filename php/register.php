@@ -30,6 +30,10 @@
 
     if (strlen($email) == 0 || strlen($password) == 0 || strlen($profile_photo) == 0 || strlen($username) == 0 || strlen($profile_photo) == 0) {
         $err_message = "Complete all the fields to register!";
+    } elseif (preg_match('/\s/',$username)) {
+        $err_message = "Your username cannot contain spaces!";
+    } elseif (preg_match('/[A-Z]/', $username)) {
+        $err_message = "Your username cannot contain uppercase letters!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $err_message = "Invalid email format";
     } elseif (count($select_banned)) {

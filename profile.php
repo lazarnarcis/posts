@@ -81,11 +81,11 @@
             if ($user['admin'] != 0) {
                 echo '<button type="button" class="btn btn-info" disabled>Admin</button>';
             }
-            if ($my_account['admin'] != 0) {
-                echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
-            }
             if ($user['full_access'] != 0) {
                 echo '<button type="button" class="btn btn-warning" disabled>Full Access</button>';
+            }
+            if ($my_account['admin'] != 0) {
+                echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
             }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
@@ -129,7 +129,7 @@
                 <input type="password" class="form-control" id="password" name="password" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id'] && $my_account['full_access'] == 0) echo "disabled"; ?> placeholder="Enter Password">
             </div>
             <div class="form-group">
-                <button type="button" class="btn btn-primary" id="submit">Update</button>
+                <button type="button" class="btn btn-primary" id="submit">Update Data</button>
             </div>
         <?php } ?>
     </form>
@@ -184,7 +184,7 @@
                         </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="ban_ip" id="ban_ip">
-                            <label class="form-check-label" for="ban_ip">Ban IP</label>
+                            <label class="form-check-label" for="ban_ip">Ban IP (current user IP: <?=$user['ip']?>)</label>
                         </div>
                     </form>
                 </div>
@@ -212,11 +212,14 @@
             $("#show_logs").click(function() {
                 let user_id = "<?php echo $user['user_id']; ?>";
                 let username = "<?php echo $user['username']; ?>";
+                let logs_length = 100;
+
                 $.ajax({
                     url: "./php/getUserLogs.php",
                     type: "POST",
                     data: {
-                        user_id: user_id
+                        user_id: user_id,
+                        logs_length: logs_length
                     },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -224,7 +227,10 @@
                         for (let i = 0; i < data.length; i++) {
                             text+=data[i].text + " || " + data[i].created_at + " (IP: " + data[i].ip + ")<br>";
                         }
-                        $("#user_logs_modal .modal-title").html(`${username}'s Logs (last 50 logs)`);
+                        $("#user_logs_modal .modal-title").html(`${username}'s Logs (last ${logs_length} logs, current logs: ${data.length})`);
+                        if (text == "") {
+                            text = "No logs yet for " + username + "!";
+                        }
                         let modal_body = text;
                         $("#user_logs_modal .modal-body").html(modal_body);
                         $("#user_logs_modal").modal("show");
