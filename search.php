@@ -52,6 +52,7 @@
     <?php echo $ui->nav($user['user_id']); ?>
     <h1 class="text-center">Search</h1>
     <div id="main_div">
+        <label for="username">Username or email (or IP if you admin)</label>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">@</span>

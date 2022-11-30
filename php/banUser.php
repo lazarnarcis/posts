@@ -1,6 +1,6 @@
 <?php
-    require("../database.php");
-    $database = new Database();
+    require("./api.php");
+    $api = new api();
     $err_message = 1;
 
     $user_id = NULL;
@@ -35,10 +35,8 @@
     $insertBan = $database->insert("bans", $data);
 
     $getBan = $database->query("SELECT * FROM bans WHERE user_id='".$user_id."' AND banned_user_id='".$banned_user_id."'");
-    $database->where("user_id", $getBan[0]['user_id']);
-    $getUserWhoBan = $database->select("users", 1);
-    $database->where("user_id", $getBan[0]['banned_user_id']);
-    $getUserBanned = $database->select("users", 1);
+    $getUserWhoBan = $api->userInfo($getBan[0]['user_id']);
+    $getUserBanned = $api->userInfo($getBan[0]['banned_user_id']);
     $reason = $getBan[0]['reason'];
 
     $ip_ban_text = NULL;
@@ -47,7 +45,7 @@
     }
 
     $data = array(
-        "text" => $getUserBanned[0]['username']." has been banned by ".$getUserWhoBan[0]['username'].$ip_ban_text.". Reason: ". $reason,
+        "text" => $getUserBanned['username']." has been banned by ".$getUserWhoBan['username'].$ip_ban_text.". Reason: ". $reason,
         "user_id" => $getBan[0]['user_id'],
         "ip" => $_SERVER['REMOTE_ADDR']
     );
@@ -55,7 +53,7 @@
 
     if ($getBan[0]['user_id'] != $getBan[0]['banned_user_id']) {
         $data = array(
-            "text" => $getUserBanned[0]['username']." has been banned by ".$getUserWhoBan[0]['username'].$ip_ban_text.". Reason: ". $reason,
+            "text" => $getUserBanned['username']." has been banned by ".$getUserWhoBan['username'].$ip_ban_text.". Reason: ". $reason,
             "user_id" => $getBan[0]['banned_user_id'],
             "ip" => $_SERVER['REMOTE_ADDR']
         );

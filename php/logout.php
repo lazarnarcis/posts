@@ -1,6 +1,6 @@
 <?php
-    require("../database.php");
-    $database = new Database();
+    require("./api.php");
+    $api = new api();
     session_start();
     $err_message = 1;
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -10,9 +10,8 @@
         $user_id = $_POST['user_id'];
     }
     
-    $database->where("user_id", $user_id);
-    $user = $database->select("users", 1);
-    $username = $user[0]['username'];
+    $user = $api->userInfo($user_id);
+    $username = $user['username'];
 
     $data = array(
         "user_id" => $user_id,

@@ -1,6 +1,6 @@
 <?php
-    require("../database.php");
-    $database = new Database();
+    require("./api.php");
+    $api = new api();
     $err_message = 1;
 
     $user_id = NULL;
@@ -22,14 +22,11 @@
     $database->where("banned_user_id", $user_id);
     $deleteBan = $database->deleteRow("bans");
 
-    $database->where("user_id", $user_id);
-    $getUserWhoBan = $database->select("users", 1);
-
-    $database->where("user_id", $my_user_id);
-    $getMyUser = $database->select("users", 1);
+    $getUserWhoBan = $api->userInfo($user_id);
+    $getMyUser = $api->userInfo($my_user_id);
 
     $data = array(
-        "text" => $getUserWhoBan[0]['username']." has been unbanned by ".$getMyUser[0]['username']."!",
+        "text" => $getUserWhoBan['username']." has been unbanned by ".$getMyUser['username']."!",
         "user_id" => $user_id,
         "ip" => $_SERVER['REMOTE_ADDR']
     );
@@ -37,7 +34,7 @@
 
     if ($user_id != $my_user_id) {
         $data = array(
-            "text" => $getUserWhoBan[0]['username']." has been unbanned by ".$getMyUser[0]['username']."!",
+            "text" => $getUserWhoBan['username']." has been unbanned by ".$getMyUser['username']."!",
             "user_id" => $my_user_id,
             "ip" => $_SERVER['REMOTE_ADDR']
         );
