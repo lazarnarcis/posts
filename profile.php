@@ -147,7 +147,7 @@
         </div>
     </div>
     <div class="modal fade" id="user_logs_modal" tabindex="-1" role="dialog" aria-labelledby="user_logs_modal_label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="user_logs_modal_label"></h5>
@@ -270,11 +270,13 @@
 
             $("#unban_user").click(function() {
                 let user_id = $(this).data("user-id");
+                let my_user_id = '<?=$my_account['user_id'];?>';
                 $.ajax({
                     url: "./php/unbanUser.php",
                     type: "POST",
                     data: {
-                        user_id: user_id
+                        user_id: user_id,
+                        my_user_id: my_user_id
                     },
                     success: function (data) {
                         if (data == 1) {

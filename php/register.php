@@ -25,10 +25,15 @@
         return;
     }
 
+    $my_ip = $_SERVER['REMOTE_ADDR'];
+    $select_banned = $database->query("SELECT * FROM users WHERE ban_ip=1 AND last_ip='".$my_ip."'");
+
     if (strlen($email) == 0 || strlen($password) == 0 || strlen($profile_photo) == 0 || strlen($username) == 0 || strlen($profile_photo) == 0) {
         $err_message = "Complete all the fields to register!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $err_message = "Invalid email format";
+    } elseif (count($select_banned)) {
+        $err_message = "You can't register because you are banned on IP!";
     } else {
         $query = "SELECT * FROM users WHERE email='".$email."' OR username='".$username."' LIMIT 1";
         $check_user = $database->query($query);
