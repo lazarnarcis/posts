@@ -63,11 +63,16 @@
     <script>
         $(document).ready(function() {
             $("#username").on('input', function() {
+                let admin = '<?=$user['admin']?>';
+                let full_access = '<?=$user['full_access']?>';
+
                 $.ajax({
                     url: "./php/searchUser.php",
                     type: "POST",
                     data: {
-                        username: $("#username").val()
+                        username: $("#username").val(),
+                        admin: admin,
+                        full_access: full_access
                     },
                     success: function (data) {
                         data = JSON.parse(data);

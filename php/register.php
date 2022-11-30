@@ -34,6 +34,8 @@
         $err_message = "Your username cannot contain spaces!";
     } elseif (preg_match('/[A-Z]/', $username)) {
         $err_message = "Your username cannot contain uppercase letters!";
+    } elseif (strlen($username) > 20) {
+        $err_message = "Your username can contain a maximum of 20 characters!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $err_message = "Invalid email format";
     } elseif (count($select_banned)) {

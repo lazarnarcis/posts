@@ -38,7 +38,7 @@
                             <a class="nav-link" href="search.php">Search</a>
                         </li>
                     </ul>
-                    <button type="button" class="btn btn-danger" id="logout">Logout</button>
+                    <button type="button" class="btn btn-danger" data-user-id="'.$my_user_id.'" id="logout">Logout</button>
                 </div>
             </nav>
             <script>
@@ -47,9 +47,13 @@
                     window.location = "profile.php?user_id=" + user_id;
                 });
                 $("#logout").click(function() {
+                    let user_id = $(this).data("user-id");
                     $.ajax({
                         url: "./php/logout.php",
                         type: "POST",
+                        data: {
+                            user_id: user_id
+                        },
                         success: function (data) {
                             if (data == 1) {
                                 window.location = "login.php";

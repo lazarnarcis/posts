@@ -89,9 +89,9 @@
             }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
-                    echo '<button type="button" class="btn btn-warning" id="show_ban_modal">Ban</button>';
+                    echo '<button type="button" class="btn btn-danger" id="show_ban_modal">Ban</button>';
                 } else {
-                    echo '<button type="button" class="btn btn-warning" id="unban_user" data-user-id="'.$user_id.'">Unban</button>';
+                    echo '<button type="button" class="btn btn-danger" id="unban_user" data-user-id="'.$user_id.'">Unban</button>';
                 }
             }
             $getBan = $api->getBan($user_id);
