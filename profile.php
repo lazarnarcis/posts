@@ -118,12 +118,15 @@
         </div>
         <?php if ($my_account['admin'] != 0 || $user['user_id'] == $my_account['user_id'] || $my_account['full_access'] != 0) { ?>
             <div class="form-group">
-                <label for="checkbox_photo">Change Photo</label> 
-                <input type="checkbox" id="checkbox_photo">
+                <label for="change_profile_photo">Change Photo</label> 
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="change_profile_photo" name="change_profile_photo">
                     <label class="custom-file-label" for="change_profile_photo">Choose Profile Photo</label>
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" <?php if ($my_account['admin'] == 0 && $user['user_id'] != $my_account['user_id'] && $my_account['full_access'] == 0) echo "disabled"; ?> placeholder="Enter Password">
             </div>
             <div class="form-group">
                 <button type="button" class="btn btn-primary" id="submit">Update</button>
@@ -194,21 +197,11 @@
     </div>
     <script>
         $(document).ready(function() {
-            let profile_base64 = "<?= $user['profile_photo']; ?>", condition_photo, profile_photo = "";
+            let profile_base64 = "<?= $user['profile_photo']; ?>", profile_photo = "";
             $("#profile_photo").attr("src", profile_base64);
             let accepted_images = ["jpeg", "jpg", "png", "gif"];
 
-            showChangePhoto();
-            function showChangePhoto(condition = false) {
-                if (condition == false) {
-                    $(".custom-file").hide();
-                    condition_photo = "no";
-                } else {
-                    $(".custom-file").show();
-                    condition_photo = "yes";
-                }
-            }
-            $("#checkbox_photo").on("change", function() {
+            $("#checkbox_data_manage").on("change", function() {
                 if ($(this).is(":checked")) {
                     showChangePhoto(true);
                 } else {
@@ -328,7 +321,9 @@
                         username: $("#username").val(),
                         email: $("#email").val(),
                         profile_photo: profile_photo,
-                        change_photo: condition_photo
+                        password: $("#password").val(),
+                        my_username: '<?=$user['username']?>',
+                        my_email: '<?=$user['email']?>'
                     };
                     $.ajax({
                         url: "./php/modifyProfile.php",
@@ -336,7 +331,10 @@
                         data: form_data,
                         success: function (data) {
                             if (data == 1) {
-                                window.location.reload();
+                                sweetAlert("Success!");
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
                             } else {
                                 sweetAlert(data, "error");
                             }

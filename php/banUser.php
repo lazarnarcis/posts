@@ -53,12 +53,14 @@
     );
     $database->insert("logs", $data);
 
-    $data = array(
-        "text" => $getUserBanned[0]['username']." has been banned by ".$getUserWhoBan[0]['username'].$ip_ban_text.". Reason: ". $reason,
-        "user_id" => $getBan[0]['banned_user_id'],
-        "ip" => $_SERVER['REMOTE_ADDR']
-    );
-    $database->insert("logs", $data);
+    if ($getBan[0]['user_id'] != $getBan[0]['banned_user_id']) {
+        $data = array(
+            "text" => $getUserBanned[0]['username']." has been banned by ".$getUserWhoBan[0]['username'].$ip_ban_text.". Reason: ". $reason,
+            "user_id" => $getBan[0]['banned_user_id'],
+            "ip" => $_SERVER['REMOTE_ADDR']
+        );
+        $database->insert("logs", $data);
+    }
 
     if (!$banUser) {
         $err_message = "Cannot ban user id: $user_id! (contact admin)";

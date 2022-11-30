@@ -35,12 +35,14 @@
     );
     $database->insert("logs", $data);
 
-    $data = array(
-        "text" => $getUserWhoBan[0]['username']." has been unbanned by ".$getMyUser[0]['username']."!",
-        "user_id" => $my_user_id,
-        "ip" => $_SERVER['REMOTE_ADDR']
-    );
-    $database->insert("logs", $data);
+    if ($user_id != $my_user_id) {
+        $data = array(
+            "text" => $getUserWhoBan[0]['username']." has been unbanned by ".$getMyUser[0]['username']."!",
+            "user_id" => $my_user_id,
+            "ip" => $_SERVER['REMOTE_ADDR']
+        );
+        $database->insert("logs", $data);
+    }
     
     if (!$unbanUser || !$deleteBan) {
         $err_message = "Cannot ban user id: $user_id! (contact admin)";
