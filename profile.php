@@ -92,6 +92,13 @@
             if ($my_account['admin'] != 0) {
                 echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
             }
+            if ($my_account['full_access'] != 0) {
+                if ($user['admin'] == 0) {
+                    echo '<button type="button" class="btn btn-warning" id="add_admin">Add Admin</button>';
+                } elseif ($user['admin'] == 1) {
+                    echo '<button type="button" class="btn btn-warning" id="remove_admin">Remove Admin</button>';
+                }
+            }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
                     echo '<button type="button" class="btn btn-danger" id="show_ban_modal">Ban</button>';
@@ -214,6 +221,76 @@
                 }
             });
 
+            $("#add_admin").click(function() {
+                let username = '<?=$user['username']?>';
+                let my_user_id = '<?=$my_account['user_id']?>';
+                let user_id = '<?=$user['user_id']?>';
+
+                Swal.fire({
+                    title: 'Are you sure you want to add '+username+' as admin?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Add him as an admin!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/addAdmin.php",
+                            type: "POST",
+                            data: {
+                                user_id: user_id,
+                                my_user_id: my_user_id
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    sweetAlert(username + ' is the new administrator!');
+                                    setTimeout(() => window.location.reload(), 2500);
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#remove_admin").click(function() {
+                let username = '<?=$user['username']?>';
+                let my_user_id = '<?=$my_account['user_id']?>';
+                let user_id = '<?=$user['user_id']?>';
+
+                Swal.fire({
+                    title: 'Are you sure you want to remove admin '+username+'?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove his admin role!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/removeAdmin.php",
+                            type: "POST",
+                            data: {
+                                user_id: user_id,
+                                my_user_id: my_user_id
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    sweetAlert(username + ' no longer has the administrator role!');
+                                    setTimeout(() => window.location.reload(), 2500);
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
             $("#show_logs").click(function() {
                 let user_id = "<?php echo $user['user_id']; ?>";
                 let username = "<?php echo $user['username']; ?>";
@@ -230,7 +307,7 @@
                         data = JSON.parse(data);
                         let text = "";
                         for (let i = 0; i < data.length; i++) {
-                            text+=data[i].text + " || " + data[i].created_at + " (IP: " + data[i].ip + ")<br>";
+                            text+="[log id: " + data[i].id + "] " + data[i].text + " || " + data[i].created_at + " (IP: " + data[i].ip + ")<br>";
                         }
                         $("#user_logs_modal .modal-title").html(`${username}'s Logs (last ${logs_length} logs, current logs: ${data.length})`);
                         if (text == "") {
