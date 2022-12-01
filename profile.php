@@ -430,28 +430,40 @@
                     sweetAlert("You must fill in all the data to proceed!", "error");
                     return;
                 } else {
-                    let form_data = {
-                        user_id: $("#user_id").val(),
-                        username: $("#username").val(),
-                        email: $("#email").val(),
-                        profile_photo: profile_photo,
-                        password: $("#password").val(),
-                        my_username: '<?=$user['username']?>',
-                        my_email: '<?=$user['email']?>'
-                    };
-                    $.ajax({
-                        url: "./php/modifyProfile.php",
-                        type: "POST",
-                        data: form_data,
-                        success: function (data) {
-                            if (data == 1) {
-                                sweetAlert("Success!");
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                sweetAlert(data, "error");
-                            }
+                    Swal.fire({
+                        title: 'Are you sure you want to make changes to the account?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let form_data = {
+                                user_id: $("#user_id").val(),
+                                username: $("#username").val(),
+                                email: $("#email").val(),
+                                profile_photo: profile_photo,
+                                password: $("#password").val(),
+                                my_username: '<?=$user['username']?>',
+                                my_email: '<?=$user['email']?>'
+                            };
+                            $.ajax({
+                                url: "./php/modifyProfile.php",
+                                type: "POST",
+                                data: form_data,
+                                success: function (data) {
+                                    if (data == 1) {
+                                        sweetAlert("Success!");
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                    } else {
+                                        sweetAlert(data, "error");
+                                    }
+                                }
+                            });
                         }
                     });
                 }

@@ -51,11 +51,7 @@
     $database->insert("logs", $data);
 
     if ($getBan[0]['user_id'] != $getBan[0]['banned_user_id']) {
-        $data = array(
-            "text" => $getUserBanned['username']." has been banned by ".$getUserWhoBan['username'].$ip_ban_text.". Reason: ". $reason,
-            "user_id" => $getBan[0]['banned_user_id'],
-            "ip" => $_SERVER['REMOTE_ADDR']
-        );
+        $data['user_id'] = $getBan[0]['banned_user_id'];
         $database->insert("logs", $data);
     }
 

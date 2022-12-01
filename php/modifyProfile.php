@@ -53,7 +53,7 @@
             $data["profile_photo"] = $profile_photo;
         }
         if (!empty($password)) {
-            $data["password"] = $password;
+            $data["password"] = md5($password);
         }
         $updateUser = $database->update("users", $data);
         if (!$updateUser) {

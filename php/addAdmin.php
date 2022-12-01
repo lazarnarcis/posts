@@ -30,11 +30,7 @@
     $database->insert("logs", $data);
 
     if ($user_id != $my_user_id) {
-        $data = array(
-            "text" => $getFullAccess['username'] . " added " . $getNewAdmin['username'] . ' as admin!',
-            "user_id" => $my_user_id,
-            "ip" => $_SERVER['REMOTE_ADDR']
-        );
+        $data['user_id'] = $my_user_id;
         $database->insert("logs", $data);
     }
 

@@ -33,11 +33,7 @@
     $database->insert("logs", $data);
 
     if ($user_id != $my_user_id) {
-        $data = array(
-            "text" => $getUserWhoBan['username']." has been unbanned by ".$getMyUser['username']."!",
-            "user_id" => $my_user_id,
-            "ip" => $_SERVER['REMOTE_ADDR']
-        );
+        $data['user_id'] = $my_user_id;
         $database->insert("logs", $data);
     }
     
