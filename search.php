@@ -45,6 +45,11 @@
             display: flex;
             align-items: left;
         }
+        @media only screen and (max-width: 600px) {
+            #main_div {
+                margin: 0 25px;
+            }
+        }
         <?php echo $ui->styleNav(); ?>
     </style>
 </head>

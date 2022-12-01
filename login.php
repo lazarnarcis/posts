@@ -28,6 +28,11 @@
         #login_form {
             margin: 0 25%;
         }
+        @media only screen and (max-width: 600px) {
+            #login_form {
+                margin: 0 25px;
+            }
+        }
     </style>
 </head>
 <body>

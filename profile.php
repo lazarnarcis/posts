@@ -68,6 +68,11 @@
             margin-left: 5px;
             color: white;
         }
+        @media only screen and (max-width: 600px) {
+            #change_profile {
+                margin: 0 25px;
+            }
+        }
         <?php echo $ui->styleNav(); ?>
     </style>
 </head>

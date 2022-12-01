@@ -31,6 +31,11 @@
         #profile_photo {
             cursor: pointer;
         }
+        @media only screen and (max-width: 600px) {
+            #register_form {
+                margin: 0 25px;
+            }
+        }
     </style>
 </head>
 <body>
