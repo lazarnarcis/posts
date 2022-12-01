@@ -92,18 +92,18 @@
             if ($my_account['admin'] != 0) {
                 echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
             }
-            if ($my_account['full_access'] != 0) {
-                if ($user['admin'] == 0) {
-                    echo '<button type="button" class="btn btn-warning" id="add_admin">Add Admin</button>';
-                } elseif ($user['admin'] == 1) {
-                    echo '<button type="button" class="btn btn-warning" id="remove_admin">Remove Admin</button>';
-                }
-            }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
                 if ($user['banned'] == 0) {
                     echo '<button type="button" class="btn btn-danger" id="show_ban_modal">Ban</button>';
                 } else {
                     echo '<button type="button" class="btn btn-danger" id="unban_user" data-user-id="'.$user_id.'">Unban</button>';
+                }
+            }
+            if ($my_account['full_access'] != 0) {
+                if ($user['admin'] == 0) {
+                    echo '<button type="button" class="btn btn-warning" id="add_admin">Add Admin</button>';
+                } elseif ($user['admin'] == 1) {
+                    echo '<button type="button" class="btn btn-warning" id="remove_admin">Remove Admin</button>';
                 }
             }
             $getBan = $api->getBan($user_id);
@@ -331,20 +331,33 @@
             });
             
             $("#submit_modify_form").click(function() {
+                let username = '<?=$user['username']?>';
                 if ($("#ban_reason").val() == "") {
                     sweetAlert("You definitely have to give a reason!", "error");
                     return;
                 }
-                $.ajax({
-                    url: "./php/banUser.php",
-                    type: "POST",
-                    data: $("#form_user_modal").serialize(),
-                    success: function (data) {
-                        if (data == 1) {
-                            window.location.reload();
-                        } else {
-                            sweetAlert(data, "error");
-                        }
+                Swal.fire({
+                    title: 'Are you sure you want to ban '+username+'?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, ban '+username+'!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/banUser.php",
+                            type: "POST",
+                            data: $("#form_user_modal").serialize(),
+                            success: function (data) {
+                                if (data == 1) {
+                                    window.location.reload();
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
                     }
                 });
             });
@@ -352,19 +365,32 @@
             $("#unban_user").click(function() {
                 let user_id = $(this).data("user-id");
                 let my_user_id = '<?=$my_account['user_id'];?>';
-                $.ajax({
-                    url: "./php/unbanUser.php",
-                    type: "POST",
-                    data: {
-                        user_id: user_id,
-                        my_user_id: my_user_id
-                    },
-                    success: function (data) {
-                        if (data == 1) {
-                            window.location.reload();
-                        } else {
-                            sweetAlert(data, "error");
-                        }
+                let username = '<?=$user['username']?>';
+                Swal.fire({
+                    title: 'Are you sure you want to unban '+username+'?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, unban '+username+'!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/unbanUser.php",
+                            type: "POST",
+                            data: {
+                                user_id: user_id,
+                                my_user_id: my_user_id
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    window.location.reload();
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
                     }
                 });
             });

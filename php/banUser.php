@@ -20,10 +20,9 @@
     }
 
     $database->where("user_id", $banned_user_id);
+    $data = array("banned" => 1);
     if (isset($_POST['ban_ip'])) {
-        $data = array("banned" => 1, "ban_ip" => 1);
-    } else {
-        $data = array("banned" => 1);
+        $data["ban_ip"] = 1;
     }
     $banUser = $database->update("users", $data);
 

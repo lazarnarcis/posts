@@ -147,11 +147,23 @@
                         if (data == 0) {
                             sweetAlert("No posts to delete!", "error");
                         } else {
-                            $.ajax({
-                                url: "./php/deletePosts.php",
-                                success: function (data) {
-                                    sweetAlert("The posts have been deleted!");
-                                    $("#posts").html("");
+                            Swal.fire({
+                                title: 'Are you sure you want to delete all posts?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, delete them!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.ajax({
+                                        url: "./php/deletePosts.php",
+                                        success: function (data) {
+                                            sweetAlert("The posts have been deleted!");
+                                            $("#posts").html("");
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -232,19 +244,31 @@
             });
             $(document).on("click", ".delete-post", function() {
                 let post_id = $(this).data("post-id");
-                $.ajax({
-                    url: "./php/deletePost.php",
-                    type: "POST",
-                    data: {
-                        post_id: post_id
-                    },
-                    success: function (data) {
-                        if (data == 1) {
-                            $(`.card-post-${post_id}`).css("display", "none");
-                            sweetAlert("The post has been deleted!");
-                        } else {
-                            sweetAlert(data, "error");
-                        }
+                Swal.fire({
+                    title: 'Are you sure you want to delete this post?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete this post!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/deletePost.php",
+                            type: "POST",
+                            data: {
+                                post_id: post_id
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    $(`.card-post-${post_id}`).css("display", "none");
+                                    sweetAlert("The post has been deleted!");
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
                     }
                 });
             });
