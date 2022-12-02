@@ -45,14 +45,17 @@
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" id="username" placeholder="Enter username">
+                <label for="username" style="margin: 0; display: none;" id="check_username"></label>
             </div>
             <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control" name="email" id="email" placeholder="Enter email">
+                <label for="email" style="margin: 0; display: none;" id="check_email"></label>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                <label for="password" style="margin: 0; display: none;" id="check_password"></label>
             </div>
             <div class="form-group">
                 <label for="profile_photo">Profile Photo</label>
@@ -62,7 +65,7 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" id="submit">Register</button>
+                <button type="button" class="btn btn-primary disabled" id="submit">Register</button>
             </div>
             <p class="text-center">Do you have already an account? <a href="login.php" class="btn btn-danger">Log in</a></p>
         </form>
@@ -70,7 +73,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            let profile_photo = "", accepted_images = ["jpeg", "jpg", "png", "gif"];
+            let profile_photo = "", accepted_images = ["jpeg", "jpg", "png", "gif"], max_req = 3;
             $("#profile_photo").on("change", function() {
                 var file = this.files[0];  
                 var reader = new FileReader();  
@@ -92,7 +95,17 @@
                 reader.readAsDataURL(file);
             });
 
+            function checkRequires () {
+                console.log(max_req);
+                if (max_req == 0){ 
+                    $("#submit").removeClass("disabled");
+                } else if (max_req != 0 && !$("#submit").hasClass("disabled")) {
+                    $("#submit").addClass("disabled");
+                }
+            }
+
             $("#submit").click(function() {
+                if ($(this).hasClass("disabled")) return;
                 $.ajax({
                     url: "./php/register.php",
                     type: "POST",
@@ -107,6 +120,90 @@
                             sweetAlert(data, "error");
                         } else {
                             window.location = "index.php";
+                        }
+                    }
+                });
+            });
+            $("#username").on("input", function() {
+                $.ajax({
+                    url: "./php/checkUsername.php",
+                    type: "POST",
+                    data: {
+                        username: $(this).val()
+                    },
+                    success: function(data) { 
+                        data = JSON.parse(data);
+                        console.log(data);
+                        let text = data.text;
+                        let type = data.type;
+                        $("#check_username").css('display', 'inline');
+                        switch (type) {
+                            case "success":
+                                $("#check_username").css("color", "green");
+                                $("#check_username").text(text); 
+                                max_req--;
+                                checkRequires();
+                                break;
+                            case "warning":
+                                $("#check_username").css("color", "red");
+                                $("#check_username").text(text); 
+                                break;
+                        }
+                    }
+                });
+            });
+            $("#email").on("input", function() {
+                $.ajax({
+                    url: "./php/checkEmail.php",
+                    type: "POST",
+                    data: {
+                        email: $(this).val()
+                    },
+                    success: function(data) { 
+                        data = JSON.parse(data);
+                        console.log(data);
+                        let text = data.text;
+                        let type = data.type;
+                        $("#check_email").css('display', 'inline');
+                        switch (type) {
+                            case "success":
+                                $("#check_email").css("color", "green");
+                                $("#check_email").text(text); 
+                                max_req--;
+                                checkRequires();
+                                break;
+                            case "warning":
+                                $("#check_email").css("color", "red");
+                                $("#check_email").text(text); 
+                                break;
+                        }
+                    }
+                });
+            });
+            $("#password").on("input", function() {
+                $.ajax({
+                    url: "./php/checkPassword.php",
+                    type: "POST",
+                    data: {
+                        password: $(this).val()
+                    },
+                    success: function(data) { 
+                        data = JSON.parse(data);
+                        console.log(data);
+                        let text = data.text;
+                        let type = data.type;
+                        $("#check_password").css('display', 'inline');
+                        switch (type) {
+                            case "success":
+                                $("#check_password").css("color", "green");
+                                $("#check_password").text(text); 
+                                max_req--;
+                                checkRequires();
+                                break;
+                            case "warning":
+                                $("#check_password").css("color", "red");
+                                $("#check_password").text(text); 
+                                break;
                         }
                     }
                 });

@@ -35,12 +35,6 @@
         #main_div {
             margin: 0 200px;
         }
-        .profile_thumbnail {
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
         .list-group > a {
             display: flex;
             align-items: left;
@@ -68,7 +62,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            $("#username").keyup(function(e) {
+            $("#username").on("input", function(e) {
                 let admin = '<?=$user['admin']?>';
                 let full_access = '<?=$user['full_access']?>';
                 let max_users = 100;
@@ -86,11 +80,11 @@
                         data = JSON.parse(data);
                         let html_text = `<div class="list-group">`;
                         $("#users").html("");
-                        for (let i = 0; i < data.length; i++) {
-                            html_text += `<a href="#" class="list-group-item list-group-item-action open_my_account" data-user-id="${data[i].user_id}"><img src="${data[i].profile_photo}" class="profile_thumbnail" alt="profile photo">${data[i].username}</a>`;
-                        }
                         if (data.length == 0) {
                             html_text += `<a href="#" class="list-group-item list-group-item-action">No users</a>`;
+                        }
+                        for (let i = 0; i < data.length; i++) {
+                            html_text += `<a href="#" class="list-group-item list-group-item-action open_my_account" data-user-id="${data[i].user_id}">${data[i].username}</a>`;
                         }
                         html_text += "</div>";
                         $("#users").html(html_text);

@@ -24,7 +24,7 @@
     if ($admin || $full_access) {
         $admin_string = "OR ip LIKE '%$username%' OR last_ip LIKE '%$username%'";
     }
-    $query = "SELECT user_id, username, profile_photo FROM users WHERE username LIKE '%$username%' ".$admin_string." OR email LIKE '%$username%' LIMIT $max_users";
+    $query = "SELECT user_id, username FROM users WHERE username LIKE '%$username%' ".$admin_string." OR email LIKE '%$username%' LIMIT $max_users";
     $users = $database->query($query);
     echo json_encode($users);
 ?>

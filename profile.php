@@ -89,7 +89,7 @@
             if ($user['full_access'] != 0) {
                 echo '<button type="button" class="btn btn-warning" disabled>Full Access</button>';
             }
-            if ($my_account['admin'] != 0 || $my_account['full_access'] != 0 || $my_account['user_id'] == $user['user_id']) {
+            if ($my_account['admin'] != 0 || $my_account['full_access'] != 0) {
                 echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
             }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
