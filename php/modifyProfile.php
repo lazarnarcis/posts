@@ -42,11 +42,23 @@
     $database->where("username", $username);
     $check_username = $database->select("users", 1);
 
-    if (count($check_email) && $email != $my_email) {
-        $err_message = "Already exist an account with this email!";
-    } elseif (count($check_username) && $username != $my_username) {
+    if (count($check_username) && $username != $my_username) {
         $err_message = "Already exist an account with this username!";
-    } else {
+    } elseif (preg_match('/[A-Z]/', $username)) {
+        $err_message = "Your username cannot contain uppercase letters!";
+    } elseif (strlen($username) > 20) {
+        $err_message = "Your username can contain a maximum of 20 characters!";
+    } elseif (strlen($username) < 6) {
+        $err_message = "Your username must contain 6 characters!";
+    } elseif (preg_match('/\s/', $username)) {
+        $err_message = "Your username cannot contain spaces!";
+    } elseif (count($check_email) && $email != $my_email) {
+        $err_message = "Already exist an account with this email!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $err_message = "Invalid email format!";
+    } elseif (strlen($password) < 8 && !empty($password)) {
+        $err_message = "The password cannot have less than 8 characters.";
+    }else {
         $database->where('user_id', $user_id);
         $data = array("username" => $username, "email" => $email);
         if (!empty($profile_photo)) {
