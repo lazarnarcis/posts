@@ -89,7 +89,7 @@
             if ($user['full_access'] != 0) {
                 echo '<button type="button" class="btn btn-warning" disabled>Full Access</button>';
             }
-            if ($my_account['admin'] != 0 || $my_account['full_access'] != 0) {
+            if ($my_account['admin'] != 0 || $my_account['full_access'] != 0 || $my_account['user_id'] == $user['user_id']) {
                 echo '<button type="button" class="btn btn-warning" id="show_logs">Logs</button>';
             }
             if ($my_account['admin'] != 0 && $user['full_access'] == 0 && $user['user_id'] != $my_account['user_id'] || $my_account['full_access'] != 0) {
@@ -101,9 +101,9 @@
             }
             if ($my_account['full_access'] != 0) {
                 if ($user['admin'] == 0) {
-                    echo '<button type="button" class="btn btn-warning" id="add_admin">Add Admin</button>';
+                    echo '<button type="button" class="btn btn-info" id="add_admin">Add Admin</button>';
                 } elseif ($user['admin'] == 1) {
-                    echo '<button type="button" class="btn btn-warning" id="remove_admin">Remove Admin</button>';
+                    echo '<button type="button" class="btn btn-info" id="remove_admin">Remove Admin</button>';
                 }
             }
             $getBan = $api->getBan($user_id);
