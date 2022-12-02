@@ -68,9 +68,10 @@
     </div>
     <script>
         $(document).ready(function() {
-            $("#username").on('input', function() {
+            $("#username").keyup(function(e) {
                 let admin = '<?=$user['admin']?>';
                 let full_access = '<?=$user['full_access']?>';
+                let max_users = 100;
 
                 $.ajax({
                     url: "./php/searchUser.php",
@@ -78,15 +79,18 @@
                     data: {
                         username: $("#username").val(),
                         admin: admin,
-                        full_access: full_access
+                        full_access: full_access,
+                        max_users: max_users
                     },
                     success: function (data) {
                         data = JSON.parse(data);
-                        console.log(data.length);
                         let html_text = `<div class="list-group">`;
                         $("#users").html("");
                         for (let i = 0; i < data.length; i++) {
                             html_text += `<a href="#" class="list-group-item list-group-item-action open_my_account" data-user-id="${data[i].user_id}"><img src="${data[i].profile_photo}" class="profile_thumbnail" alt="profile photo">${data[i].username}</a>`;
+                        }
+                        if (data.length == 0) {
+                            html_text += `<a href="#" class="list-group-item list-group-item-action">No users</a>`;
                         }
                         html_text += "</div>";
                         $("#users").html(html_text);

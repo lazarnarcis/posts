@@ -13,14 +13,18 @@
     if (isset($_POST['full_access'])) {
         $full_access = $_POST['full_access'];
     }
-    if (!isset($username)) {
+    $max_users = NULL;
+    if (isset($_POST['max_users'])) {
+        $max_users = $_POST['max_users'];
+    }
+    if (!isset($username) || !isset($max_users)) {
         return;
     }
     $admin_string = NULL;
     if ($admin || $full_access) {
         $admin_string = "OR ip LIKE '%$username%' OR last_ip LIKE '%$username%'";
     }
-    $query = "SELECT user_id, username, profile_photo FROM users WHERE username LIKE '%$username%' ".$admin_string." OR email LIKE '%$username%' LIMIT 100";
+    $query = "SELECT user_id, username, profile_photo FROM users WHERE username LIKE '%$username%' ".$admin_string." OR email LIKE '%$username%' LIMIT $max_users";
     $users = $database->query($query);
     echo json_encode($users);
 ?>
