@@ -14,7 +14,7 @@
     } else {
         $db_username = "root";
         $db_password = "";
-        $db_name = "facebook";
+        $db_name = "posts";
         $db_host = "localhost";
     }
 
