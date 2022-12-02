@@ -172,6 +172,11 @@
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
+                    <?php
+                        if ($my_account['full_access'] != 0) {
+                            echo '<button type="button" class="btn btn-danger" id="delete_logs">Delete Logs</button>';
+                        }
+                    ?>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -246,6 +251,41 @@
                             success: function (data) {
                                 if (data == 1) {
                                     sweetAlert(username + ' is the new administrator!');
+                                    setTimeout(() => window.location.reload(), 2500);
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#delete_logs").click(function() {
+                let username = '<?=$user['username']?>';
+                let user_id = '<?=$user['user_id'];?>';
+                let my_user_id = '<?=$my_account['user_id'];?>';
+
+                Swal.fire({
+                    title: `Are you sure you want to delete ${username}'s logs?`,
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Delete Logs!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/deleteLogs.php",
+                            type: "POST",
+                            data: {
+                                user_id: user_id,
+                                my_user_id: my_user_id
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    sweetAlert(`${username}'s logs have been deleted!`);
                                     setTimeout(() => window.location.reload(), 2500);
                                 } else {
                                     sweetAlert(data, "error");
