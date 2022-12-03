@@ -67,7 +67,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="new_accounts_modal_label">New accounts (last 100)</h5>
+                    <h5 class="modal-title" id="new_accounts_modal_label"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -76,11 +76,6 @@
                     <div id="users"></div>
                 </div>
                 <div class="modal-footer">
-                    <!-- <?php
-                        if ($my_account['full_access'] != 0) {
-                            echo '<button type="button" class="btn btn-danger" id="delete_logs">Delete Logs</button>';
-                        }
-                    ?> -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -89,12 +84,15 @@
     <script>
         $(document).ready(function() {
             $("#user_accounts").click(function() {
+                let max_users = 100;
                 $("#new_accounts_modal").modal("show");
+                $("#users").html(`<div class="list-group"><a href="#" class="list-group-item list-group-item-action">Loading...</a></div>`);
+                $("#new_accounts_modal .modal-title").html(`New accounts (last ${max_users})`);
                 $.ajax({
                     url: "./php/getLastAccounts.php",
                     type: "POST",
                     data: {
-                        max_users: 100
+                        max_users: max_users
                     },
                     success: function (data) {
                         data = JSON.parse(data);

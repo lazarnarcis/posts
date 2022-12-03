@@ -10,7 +10,7 @@
     if (!isset($max_users)) {
         return;
     }
-    $database->orderBy("user_id", "DESC");
+    $database->orderBy("created_at", "ASC");
     $users = $database->select("users", $max_users);
     echo json_encode($users);
 ?>
