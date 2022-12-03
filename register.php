@@ -73,7 +73,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            let profile_photo = "", accepted_images = ["jpeg", "jpg", "png", "gif"], max_req = 3;
+            let profile_photo = "", accepted_images = ["jpeg", "jpg", "png", "gif"];
             $("#profile_photo").on("change", function() {
                 var file = this.files[0];  
                 var reader = new FileReader();  
@@ -95,11 +95,16 @@
                 reader.readAsDataURL(file);
             });
 
-            function checkRequires () {
-                console.log(max_req);
-                if (max_req == 0){ 
+            let max_req = [];
+            function checkRequires (current_action, type) {
+                if (!max_req.includes(current_action)) {
+                    max_req.push(current_action);
+                }
+
+                if (type == "add" && max_req.length == 3) {
                     $("#submit").removeClass("disabled");
-                } else if (max_req != 0 && !$("#submit").hasClass("disabled")) {
+                } else if (type == "remove") {
+                    max_req.slice(max_req.indexOf(current_action), 1);
                     $("#submit").addClass("disabled");
                 }
             }
@@ -141,12 +146,12 @@
                             case "success":
                                 $("#check_username").css("color", "green");
                                 $("#check_username").text(text); 
-                                max_req--;
-                                checkRequires();
+                                checkRequires("username", "add");
                                 break;
                             case "warning":
                                 $("#check_username").css("color", "red");
                                 $("#check_username").text(text); 
+                                checkRequires("username", "remove");
                                 break;
                         }
                     }
@@ -169,12 +174,12 @@
                             case "success":
                                 $("#check_email").css("color", "green");
                                 $("#check_email").text(text); 
-                                max_req--;
-                                checkRequires();
+                                checkRequires("email", "add");
                                 break;
                             case "warning":
                                 $("#check_email").css("color", "red");
                                 $("#check_email").text(text); 
+                                checkRequires("email", "remove");
                                 break;
                         }
                     }
@@ -197,12 +202,12 @@
                             case "success":
                                 $("#check_password").css("color", "green");
                                 $("#check_password").text(text); 
-                                max_req--;
-                                checkRequires();
+                                checkRequires("password", "add");
                                 break;
                             case "warning":
                                 $("#check_password").css("color", "red");
                                 $("#check_password").text(text); 
+                                checkRequires("password", "remove");
                                 break;
                         }
                     }
