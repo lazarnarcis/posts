@@ -60,6 +60,7 @@
             <div class="col text-center">
                 <button type="button" class="btn btn-success" id="new_accounts">New Accounts</button>
                 <button type="button" class="btn btn-success" id="ban_list">Ban List</button>
+                <button type="button" class="btn btn-success" id="admin_list">Admin List</button>
             </div>
         </div>
     </div>
@@ -94,6 +95,24 @@
                 </div>
                 <div class="modal-body">
                     <div id="ban_list_html"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="admin_list_modal" tabindex="-1" role="dialog" aria-labelledby="admin_list_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="admin_list_modal_label"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="admin_list_html"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -143,7 +162,7 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         let html_text = `<div class="list-group">`;
-                        $("#users").html("");
+                        $("#ban_list_html").html("");
                         if (data.length == 0) {
                             html_text += `<a href="#" class="list-group-item list-group-item-action">No users banned!</a>`;
                         }
@@ -154,6 +173,39 @@
                         }
                         html_text += "</div>";
                         $("#ban_list_html").html(html_text);
+                    }
+                })
+            });
+            $("#admin_list").click(function() {
+                let max_users = 100;
+                $("#admin_list_modal").modal("show");
+                $("#admin_list_html").html(`<div class="list-group"><a href="#" class="list-group-item list-group-item-action">Loading...</a></div>`);
+                $("#admin_list_modal .modal-title").html(`Admin List (last ${max_users})`);
+                $.ajax({
+                    url: "./php/getLastAdmins.php",
+                    type: "POST",
+                    data: {
+                        max_users: max_users
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        let html_text = `<div class="list-group">`;
+                        $("#admin_list_html").html("");
+                        if (data.length == 0) {
+                            html_text += `<a href="#" class="list-group-item list-group-item-action">No admins!</a>`;
+                        }
+                        for (let i = 0; i < data.length; i++) {
+                            let text = "";
+                            if (data[i].admin != 0) {
+                                text += ` [ADMIN]`;
+                            }
+                            if (data[i].full_access != 0) {
+                                text += ` [FULL ACCESS]`;
+                            }
+                            html_text += `<a href="#" class="list-group-item list-group-item-action open_my_account" data-user-id="${data[i].user_id}"><span>${data[i].username+text} (user id: ${data[i].user_id})</span><span>created at: ${data[i].created_at}</span></a>`;
+                        }
+                        html_text += "</div>";
+                        $("#admin_list_html").html(html_text);
                     }
                 })
             });
