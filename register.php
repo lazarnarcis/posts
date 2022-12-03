@@ -138,7 +138,6 @@
                     },
                     success: function(data) { 
                         data = JSON.parse(data);
-                        console.log(data);
                         let text = data.text;
                         let type = data.type;
                         $("#check_username").css('display', 'inline');
@@ -166,7 +165,6 @@
                     },
                     success: function(data) { 
                         data = JSON.parse(data);
-                        console.log(data);
                         let text = data.text;
                         let type = data.type;
                         $("#check_email").css('display', 'inline');
@@ -194,7 +192,6 @@
                     },
                     success: function(data) { 
                         data = JSON.parse(data);
-                        console.log(data);
                         let text = data.text;
                         let type = data.type;
                         $("#check_password").css('display', 'inline');

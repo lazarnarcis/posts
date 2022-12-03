@@ -19,7 +19,18 @@
             $current_page = basename($_SERVER['PHP_SELF']); // get current file name
             $home_active = ($current_page == "index.php") ? "active" : "";
             $search_active = ($current_page == "search.php") ? "active" : "";
+            $admin_active = ($current_page == "admin.php") ? "active" : "";
             $profile_active = ($current_page == "profile.php" && $my_user_id == $user_id) ? "active" : "";
+            $getMyUser = $GLOBALS['api']->userInfo($my_user_id);
+            $admin = $getMyUser['admin'];
+            $full_access = $getMyUser['full_access'];
+            $admin_buttons = NULL;
+
+            if ($admin != 0 || $full_access != 0) {
+                $admin_buttons.='<li class="nav-item '.$admin_active.'">
+                    <a class="nav-link" href="admin.php">Admin</a>
+                </li>';
+            }
 
             return '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <a class="navbar-brand" href="#">Posts</a>
@@ -37,6 +48,7 @@
                         <li class="nav-item '.$search_active.'">
                             <a class="nav-link" href="search.php">Search</a>
                         </li>
+                        '.$admin_buttons.'
                     </ul>
                     <button type="button" class="btn btn-danger" data-user-id="'.$my_user_id.'" id="logout">Logout</button>
                 </div>
