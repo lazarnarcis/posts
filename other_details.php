@@ -24,7 +24,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Other details</title>
     <?php 
         echo $jquery->jquery(); 
         echo $bootstrap->bootstrap4Css();
@@ -54,12 +54,14 @@
 </head>
 <body>
     <?php echo $ui->nav($user['user_id']); ?>
-    <h1 class="text-center">Admin Panel</h1>
+    <h1 class="text-center">Other details</h1>
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <button type="button" class="btn btn-success" id="new_accounts">New Accounts</button>
-                <button type="button" class="btn btn-success" id="ban_list">Ban List</button>
+                <?php if ($user['admin'] != 0 || $user['full_access'] != 0) { ?>
+                    <button type="button" class="btn btn-success" id="new_accounts">New Accounts</button>
+                    <button type="button" class="btn btn-success" id="ban_list">Ban List</button>
+                <?php } ?>
                 <button type="button" class="btn btn-success" id="admin_list">Admin List</button>
             </div>
         </div>
