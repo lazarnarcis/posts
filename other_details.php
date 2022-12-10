@@ -49,7 +49,6 @@
             align-items: center;
             justify-content: space-between;
         }
-        <?php echo $ui->styleNav(); ?>
     </style>
 </head>
 <body>

@@ -1,20 +1,5 @@
 <?php
     class UIHandler {
-        function styleNav() {
-            return '
-                .open_my_account:not(.nav-link) {
-                    display: flex;
-                    float: left;
-                    border-radius: 5px;
-                    padding: 5px;
-                    transition: .5s;
-                }
-                .open_my_account:not(.nav-link):hover {
-                    background: lightgrey;
-                    cursor: pointer;
-                }
-            ';
-        }
         function nav($my_user_id = NULL, $user_id = NULL) {
             $current_page = basename($_SERVER['PHP_SELF']); // get current file name
             $home_active = ($current_page == "index.php") ? "active" : "";

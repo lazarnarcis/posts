@@ -44,7 +44,6 @@
                 margin: 0 25px;
             }
         }
-        <?php echo $ui->styleNav(); ?>
     </style>
 </head>
 <body>

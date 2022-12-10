@@ -7,6 +7,7 @@
     include("./utils/bootstrap.php");
     include("./utils/jquery.php");
     include("./utils/sweetAlert.php");
+    include("./utils/fontAwesome.php");
     include("./uihandler.php");
     require("./php/api.php");
     $bootstrap = new Bootstrap();
@@ -14,6 +15,7 @@
     $sweetAlert = new sweet_alert();
     $api = new api();
     $ui = new UIHandler();
+    $font_awesome = new fontAwesome();
 
     $user = $api->userInfo($_SESSION['user_id']);
 ?>
@@ -30,6 +32,7 @@
         echo $bootstrap->bootstrap4Css();
         echo $bootstrap->bootstrap4JS();
         echo $sweetAlert->sweetAlert();
+        echo $font_awesome->fontAwesome();
     ?>
     <style>
         #posts_form {
@@ -41,17 +44,6 @@
         #posts {
             flex-direction: column;
         }
-        .profile_photo_logo {
-            height: 40px;
-            border-radius: 50%;
-            width: 40px;
-        }
-        .button_for_user {
-            border: 0;
-            background: none;
-            font-size: 20px;
-        }
-        <?php echo $ui->styleNav(); ?>
     </style>
 </head>
 <body>
@@ -92,7 +84,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            function createPost(description, username, post_id, post_user_id, profile_photo) {
+            function createPost(description, username, post_id, post_user_id) {
                 let post_delete_button = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
@@ -100,19 +92,13 @@
                 
                 if (post_user_id == user_id || admin != 0 || full_access != 0) {
                     post_delete_button += `
-                        <button type="button" class="btn btn-warning delete-post" data-post-id='${post_id}'>Delete post</button>
-                        <button type="button" class="btn btn-danger edit-post" data-post-id='${post_id}'>Edit post</button>
+                        <i class="fa fa-edit edit-post" data-post-id='${post_id}'"></i>
+                        <i class="fa fa-trash delete-post" data-post-id='${post_id}'"></i>
                     `;
                 }
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
-                        <div class="open_my_account" data-user-id="${post_user_id}">
-                            <img src="${profile_photo}" alt="Profile photo" class="profile_photo_logo">
-                            <button type="button" class="button_for_user">${username}</button>
-                        </div>
-                        <br><br><br>
-                        <p class="card-text">${description}</p>
-                        ${post_delete_button}
+                        <span class="open_my_account" data-user-id="${post_user_id}" style="text-decoration: underline; cursor: pointer;">${username}</span> says: ${description}${post_delete_button}
                     </div>
                 </div>`;
                 return post;
@@ -131,7 +117,7 @@
                         let posts_length = posts.length;
                         if (posts_length != 0) {
                             for (let i = 0; i < posts.length; i++) {
-                                let html_posts = createPost(posts[i]['description'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id'], posts[i]['profile_photo']);
+                                let html_posts = createPost(posts[i]['description'], posts[i]['username'], posts[i]['post_id'], posts[i]['user_id']);
                                 $("#posts").append(html_posts);
                             }
                             initial_limit+=posts_length;
@@ -238,7 +224,9 @@
                     success: function (data) {
                         $("#edit_post_modal").modal('hide');
                         sweetAlert("The post has been modified!");
-                        setTimeout(() => window.location.reload(), 1000);
+                        setTimeout(function() {
+                            $("#refresh_posts").click();
+                        }, 1000);
                     }
                 });
             });
@@ -288,25 +276,8 @@
                             user_id: <?php echo $user['user_id']; ?>
                         },
                         success: function (data) {
-                            data = JSON.parse(data);
-                            let post_id = data[0].post_id;
-                            if (data.length) {
-                                $.ajax({
-                                    url: "./php/getPost.php",
-                                    type: "POST",
-                                    data: {
-                                        post_id: post_id
-                                    },
-                                    success: function (posts) {
-                                        posts = JSON.parse(posts);
-                                        posts = posts[0];
-                                        let html_post = createPost(posts['description'], posts['username'], posts['post_id'], posts['user_id'], posts['profile_photo']);
-                                        $("#posts").prepend(html_post);
-                                        initial_limit+=1;
-                                    }
-                                });
-                                $("#description").val("");
-                            }
+                            $("#refresh_posts").click();
+                            $("#description").val("");
                         }
                     });
                 }
