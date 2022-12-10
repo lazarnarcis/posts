@@ -5,6 +5,7 @@
             $home_active = ($current_page == "index.php") ? "active" : "";
             $search_active = ($current_page == "search.php") ? "active" : "";
             $other_details = ($current_page == "other_details.php") ? "active" : "";
+            $tickets_active = ($current_page == "tickets.php") ? "active" : "";
             $profile_active = ($current_page == "profile.php" && $my_user_id == $user_id) ? "active" : "";
 
             return '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -22,6 +23,9 @@
                         </li>
                         <li class="nav-item '.$search_active.'">
                             <a class="nav-link" href="search.php">Search</a>
+                        </li>
+                        <li class="nav-item '.$tickets_active.'">
+                            <a class="nav-link" href="tickets.php">Tickets</a>
                         </li>
                         <li class="nav-item '.$other_details.'">
                             <a class="nav-link" href="other_details.php">Other details</a>

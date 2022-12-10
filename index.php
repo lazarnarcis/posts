@@ -85,13 +85,13 @@
     <script>
         $(document).ready(function() {
             function createPost(description, username, post_id, post_user_id) {
-                let post_delete_button = ``;
+                let admin_buttons = ``;
                 let user_id = '<?php echo $user['user_id']; ?>';
                 let admin = '<?php echo $user['admin']; ?>';
                 let full_access = '<?php echo $user['full_access']; ?>';
                 
                 if (post_user_id == user_id || admin != 0 || full_access != 0) {
-                    post_delete_button += `
+                    admin_buttons += `
                         <i class="fa fa-edit edit-post" data-post-id='${post_id}'"></i>
                         <i class="fa fa-trash delete-post" data-post-id='${post_id}'"></i>
                     `;
@@ -99,12 +99,12 @@
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
                         <span class="open_my_account" data-user-id="${post_user_id}" style="text-decoration: underline; cursor: pointer;">${username}</span>: 
-                        ${urlify(description)}${post_delete_button}
+                        ${detectLinks(description) + admin_buttons}
                     </div>
                 </div>`;
                 return post;
             }
-            function urlify(text) {
+            function detectLinks(text) {
                 var urlRegex = /(https?:\/\/[^\s]+)/g;
                 return text.replace(urlRegex, function(url) {
                     return '<a href="' + url + '" target="_blank">' + url + '</a>';

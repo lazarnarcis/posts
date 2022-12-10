@@ -33,11 +33,15 @@
     } elseif (count($select_banned)) {
         $err_message = "You can't register because you are banned on IP!";
     } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
         $data = array(
             "email" => $email,
             "password" => md5($password),
             "username" => $username,
-            "profile_photo" => $profile_photo
+            "profile_photo" => $profile_photo,
+            "online" => 1,
+            "last_ip" => $ip,
+            "ip" => $ip
         );
         $database->insert("users", $data);
 
@@ -47,11 +51,6 @@
         $user_id = $user['user_id'];
         $_SESSION['logged'] = true;
         $_SESSION['user_id'] = $user_id;
-        $ip = $_SERVER['REMOTE_ADDR'];
-
-        $data = array("last_ip" => $ip, "ip" => $ip);
-        $database->where("user_id", $user_id);
-        $database->update("users", $data);
 
         $data = array(
             "user_id" => $user_id,

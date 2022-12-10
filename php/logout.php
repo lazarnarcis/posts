@@ -13,6 +13,10 @@
     $user = $api->userInfo($user_id);
     $username = $user['username'];
 
+    $data = array("online" => 0);
+    $database->where("user_id", $user_id);
+    $database->update("users", $data);
+
     $data = array(
         "user_id" => $user_id,
         "ip" => $ip,

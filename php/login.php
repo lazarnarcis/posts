@@ -36,7 +36,7 @@
                 $_SESSION['user_id'] = $user_id;
                 $ip = $_SERVER['REMOTE_ADDR'];
 
-                $data = array("last_ip" => $ip);
+                $data = array("last_ip" => $ip, "online" => 1);
                 $database->where("user_id", $user_id);
                 $database->update("users", $data);
 
