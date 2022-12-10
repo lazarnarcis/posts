@@ -98,10 +98,17 @@
                 }
                 let post = `<div class="card post card-post-${post_id}" style="width: 18rem;">
                     <div class="card-body">
-                        <span class="open_my_account" data-user-id="${post_user_id}" style="text-decoration: underline; cursor: pointer;">${username}</span> says: ${description}${post_delete_button}
+                        <span class="open_my_account" data-user-id="${post_user_id}" style="text-decoration: underline; cursor: pointer;">${username}</span>: 
+                        ${urlify(description)}${post_delete_button}
                     </div>
                 </div>`;
                 return post;
+            }
+            function urlify(text) {
+                var urlRegex = /(https?:\/\/[^\s]+)/g;
+                return text.replace(urlRegex, function(url) {
+                    return '<a href="' + url + '" target="_blank">' + url + '</a>';
+                });
             }
             function refreshPosts() {
                 $.ajax({
