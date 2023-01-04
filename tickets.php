@@ -61,7 +61,7 @@
             Your tickets
         </div>
         <div class="card-body">
-            <ul class="list-group"></ul>
+            <ul class="list-group list-tickets"></ul>
         </div>
     </div>
     <script>
@@ -84,6 +84,68 @@
                             }                 
 
                             $(".list-admins").append(`<li class="list-group-item">${user.username + text} <a href="profile.php?user_id=${user_id}">View profile &#8629;</a></li>`);
+                        }
+                    }
+                });
+            }
+            getUserTickets();
+            function getUserTickets() {
+                $(".list-tickets").html("");
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        user_id: <?=$user_id?>
+                    },
+                    url: "./php/getUserTickets.php",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        for (let i = 0; i < data.length; i++) {
+                            let ticket = data[i];       
+                            let ticket_id = ticket.id; 
+                            let text = ticket.text; 
+                            let flags = ticket.flags;
+                            let created_at = ticket.created_at;
+                            let username = ticket.username;
+                            let user_id = ticket.user_id;
+                            flags = flags.split(",");
+                            let flags_text = "";
+                            for (let i = 0; i < flags.length; i++) {
+                                let button_class = "";
+                                if (flags[i] == "Bug") {
+                                    button_class = "btn-danger";
+                                } else if (flags[i] == "Report Problem") {
+                                    button_class = "btn-warning";
+                                } else if (flags[i] == "Question") {
+                                    button_class = "btn-info";
+                                } else if (flags[i] == "Enhacement") {
+                                    button_class = "btn-light";
+                                } else {
+                                    button_class = "btn-dark";
+                                }
+
+                                flags_text += `<button type="button" style="margin-left: 5px;" class="btn ${button_class} disabled">${flags[i]}</button>`;
+                            }
+                            let user_link = `<a href="profile.php?user_id=${user_id}">${username}</a>`;
+
+                            $(".list-tickets").append(`
+                                <li class="list-group-item">
+                                    <div class="d-flex align-center justify-content-between">
+                                        <div>
+                                            <span>
+                                                <p class="font-weight-bold">Ticket ID: #${ticket_id} (created by ${user_link})</p>
+                                                ${text}
+                                            </span> 
+                                            <a href="view_ticket.php?ticket_id=${ticket_id}">View ticket &#8629;</a>
+                                        </div>
+                                        <div>
+                                            ${flags_text}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span>Created at: ${created_at}</span>
+                                    </div>
+                                </li>
+                            `);
                         }
                     }
                 });
