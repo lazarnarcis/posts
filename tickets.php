@@ -46,26 +46,36 @@
 </head>
 <body>
     <?php echo $ui->nav($my_account['user_id']); ?>
+    <h1 class="text-center">Tickets</h1>
     <div class="card">
         <div class="card-header">
             Online Admins
         </div>
         <div class="card-body">
+            <ul class="list-group list-admins"></ul>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            Your tickets
+        </div>
+        <div class="card-body">
             <ul class="list-group"></ul>
         </div>
     </div>
-
     <script>
         $(document).ready(function() {
             getOnlineAdmins();
             function getOnlineAdmins() {
-                $(".list-group").html("");
+                $(".list-admins").html("");
                 $.ajax({
                     url: "./php/getOnlineAdmins.php",
                     success: function (data) {
                         data = JSON.parse(data);
                         for (let i = 0; i < data.length; i++) {
                             let user = data[i], text = "";
+                            let user_id = user.user_id;
                             if (user.admin != 0) {
                                 text += ` [ADMIN]`;
                             }
@@ -73,7 +83,7 @@
                                 text += ` [FULL ACCESS]`;
                             }                 
 
-                            $(".list-group").append(`<li class="list-group-item">${user.username + text}</li>`);
+                            $(".list-admins").append(`<li class="list-group-item">${user.username + text} <a href="profile.php?user_id=${user_id}">View profile &#8629;</a></li>`);
                         }
                     }
                 });
