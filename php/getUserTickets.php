@@ -10,7 +10,7 @@
         return;
     }
     
-    $query = "SELECT tickets.id, tickets.user_id, tickets.text, tickets.ip, tickets.created_at, tickets.flags, users.username FROM tickets LEFT JOIN users ON users.user_id=tickets.user_id WHERE tickets.user_id='".$user_id."' ORDER BY created_at DESC";
+    $query = "SELECT tickets.id, tickets.user_id, tickets.text, tickets.ip, tickets.created_at, tickets.flags, tickets.closed, users.username FROM tickets LEFT JOIN users ON users.user_id=tickets.user_id WHERE tickets.user_id='".$user_id."' ORDER BY closed, created_at DESC";
     $tickets = $database->query($query);
     echo json_encode($tickets);
 ?>

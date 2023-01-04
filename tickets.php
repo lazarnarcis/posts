@@ -37,6 +37,18 @@
         .card {
             margin: 0 25%;
         }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        .list-group-item {
+            color: black;
+        }
+        .list-group-item:hover {
+            color: black;
+            text-decoration: none;
+            background-color: #ededed;
+        }
         @media only screen and (max-width: 600px) {
             .card {
                 margin: 0 25px;
@@ -46,13 +58,13 @@
 </head>
 <body>
     <?php echo $ui->nav($my_account['user_id']); ?>
-    <h1 class="text-center">Tickets</h1>
+    <h1 class="text-center">Tickets <button type="button" class="btn btn-success" id="create_ticket">Create Ticket</button></h1>
     <div class="card">
         <div class="card-header">
             Online Admins
         </div>
         <div class="card-body">
-            <ul class="list-group list-admins"></ul>
+            <div class="list-group list-admins"></div>
         </div>
     </div>
     <br>
@@ -61,12 +73,140 @@
             Your tickets
         </div>
         <div class="card-body">
-            <ul class="list-group list-tickets"></ul>
+            <div class="list-group list-tickets"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="create_ticket_modal" tabindex="-1" role="dialog" aria-labelledby="create_ticket_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="create_ticket_modal_label"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_create_ticket">
+                        <input type="hidden" name="user_id" id="user_id" value="<?=$user_id;?>">
+                        <div class="form-group">
+                            <label for="ban_reason"><b>Ticket Title</b></label>
+                            <input type="text" class="form-control" name="ticket_title" id="ticket_title" placeholder="Ticket Title">
+                        </div>
+                        <div class="form-group">
+                            <label><b>Select the ticket category:</b></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Bug" id="bug_flag" checked>
+                                <label class="form-check-label" for="bug_flag">
+                                    Bug
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Report Problem" id="report_flag">
+                                <label class="form-check-label" for="report_flag">
+                                    Report Problem
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Question" id="question_flag">
+                                <label class="form-check-label" for="question_flag">
+                                    Question
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Enhancement" id="enhancement_flag">
+                                <label class="form-check-label" for="enhancement_flag">
+                                    Enhancement
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submit_create_ticket">Create Ticket</button>
+                </div>
+            </div>
         </div>
     </div>
     <script>
         $(document).ready(function() {
+            $("#submit_create_ticket").click(function() {
+                let flags = [];
+                let bug_flag = $("#bug_flag").val();
+                if ($("#bug_flag").is(":checked")) {
+                    flags.push(bug_flag);
+                }
+                let report_flag = $("#report_flag").val();
+                if ($("#report_flag").is(":checked")) {
+                    flags.push(report_flag);
+                }
+                let question_flag = $("#question_flag").val();
+                if ($("#question_flag").is(":checked")) {
+                    flags.push(question_flag);
+                }
+                let enhancement_flag = $("#enhancement_flag").val();
+                if ($("#enhancement_flag").is(":checked")) {
+                    flags.push(enhancement_flag);
+                }
+                if (flags.length > 2) {
+                    sweetAlert("You cannot select more than 2 categories!", "error");
+                    return;
+                }
+                flags = flags.toString();
+                let ticket_title = $("#ticket_title").val();
+                if (ticket_title == "") {
+                    sweetAlert("You definitely have to give a ticket title!", "error");
+                    return;
+                }
+                if (ticket_title.length < 10) {
+                    sweetAlert("The title must have at least 10 characters!", "error");
+                    return;
+                }
+                if (flags.length == 0) {
+                    sweetAlert("You must select at least one category!", "error");
+                    return;
+                }
+                Swal.fire({
+                    title: 'Are you sure you want to create this ticket?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, create it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "./php/createTicket.php",
+                            type: "POST",
+                            data: {
+                                flags: flags,
+                                user_id: $("#user_id").val(),
+                                ticket_title: $("#ticket_title").val()
+                            },
+                            success: function (data) {
+                                if (data == 1) {
+                                    window.location.reload();
+                                } else {
+                                    sweetAlert(data, "error");
+                                }
+                            }
+                        });
+                    }
+                });
+            });
             getOnlineAdmins();
+            $("#create_ticket").click(function() {
+                $.ajax({
+                    url: "./php/getNewTicketID.php",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        let new_ticket_id = Number(data)+1;
+                        $("#create_ticket_modal_label").html("Create Ticket #" + new_ticket_id);
+                        $("#create_ticket_modal").modal("show");
+                    }
+                });
+            });
             function getOnlineAdmins() {
                 $(".list-admins").html("");
                 $.ajax({
@@ -83,7 +223,11 @@
                                 text += ` [FULL ACCESS]`;
                             }                 
 
-                            $(".list-admins").append(`<li class="list-group-item">${user.username + text} <a href="profile.php?user_id=${user_id}">View profile &#8629;</a></li>`);
+                            $(".list-admins").append(`
+                                <a class="list-group-item list-group-item-action" href="profile.php?user_id=${user_id}">
+                                    ${user.username + text}
+                                </a>
+                            `);
                         }
                     }
                 });
@@ -117,7 +261,7 @@
                                     button_class = "btn-warning";
                                 } else if (flags[i] == "Question") {
                                     button_class = "btn-info";
-                                } else if (flags[i] == "Enhacement") {
+                                } else if (flags[i] == "Enhancement") {
                                     button_class = "btn-light";
                                 } else {
                                     button_class = "btn-dark";
@@ -125,26 +269,24 @@
 
                                 flags_text += `<button type="button" style="margin-left: 5px;" class="btn ${button_class} disabled">${flags[i]}</button>`;
                             }
-                            let user_link = `<a href="profile.php?user_id=${user_id}">${username}</a>`;
+                            let closed = ticket.closed;
+                            flags_text += `<button type="button" style="margin-left: 5px;" class="btn ${closed == 0 ? "btn-success" : "btn-danger"} disabled">${closed == 0 ? "Opened" : "Closed"}</button>`;
 
                             $(".list-tickets").append(`
-                                <li class="list-group-item">
-                                    <div class="d-flex align-center justify-content-between">
-                                        <div>
-                                            <span>
-                                                <p class="font-weight-bold">Ticket ID: #${ticket_id} (created by ${user_link})</p>
-                                                ${text}
-                                            </span> 
-                                            <a href="view_ticket.php?ticket_id=${ticket_id}">View ticket &#8629;</a>
-                                        </div>
-                                        <div>
+                                <a class="list-group-item" href="view_ticket.php?ticket_id=${ticket_id}">
+                                    <span class="d-flex align-center justify-content-between">
+                                        <span>
+                                            <p class="font-weight-bold">Ticket ID: #${ticket_id} (created by ${username})</p>
+                                            <p>${text}</p>
+                                        </span>
+                                        <span>
                                             ${flags_text}
-                                        </div>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <span>Created at: ${created_at}</span>
-                                    </div>
-                                </li>
+                                        </span>
+                                    </span>
+                                    <p style="text-align: right;">
+                                        Created at: ${created_at}
+                                    </p>
+                                </a>
                             `);
                         }
                     }
